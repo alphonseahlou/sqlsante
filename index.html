@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SQLSanté — Apprenez le SQL en contexte médical, du débutant à l'expert. Exercices interactifs, moteur SQL dans le navigateur, aucune installation requise.">
+  <title>SQLSanté – Apprendre SQL</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+  <div class="topbar">
+    <div class="logo">SQL<em>Santé</em></div>
+    <button class="sidebar-toggle" onclick="toggleSidebar()" title="Afficher/masquer les leçons">☰</button>
+    <div class="domain-badge" id="domain-badge" onclick="toggleDomainMenu(event)">
+      <div class="domain-menu" id="domain-menu" onclick="event.stopPropagation()"></div>
+    </div>
+    <div class="lvl-tabs">
+      <button class="lvl-btn active" data-l="d" onclick="setLevel('d')" title="Niveau Débutant — SELECT, WHERE, ORDER BY, LIMIT : les bases pour lire des données">Débutant</button>
+      <button class="lvl-btn" data-l="i" onclick="setLevel('i')" title="Niveau Intermédiaire — JOIN, GROUP BY, sous-requêtes : combiner et agréger les données">Intermédiaire</button>
+      <button class="lvl-btn" data-l="a" onclick="setLevel('a')" title="Niveau Avancé — CTE, fonctions de fenêtre, CASE, chaînes et dates">Avancé</button>
+      <button class="lvl-btn" data-l="e" onclick="setLevel('e')" title="Niveau Expert — DML, DDL, transactions, optimisation, opérations ensemblistes">Expert</button>
+    </div>
+    <button class="stats-btn" onclick="openStats()" title="Voir votre progression par catégorie SQL sous forme de radar et de barres par niveau">📊 Compétences</button>
+    <button class="stats-btn" onclick="openLexique()" title="Dictionnaire des commandes SQL — cherchez un mot-clé et obtenez son explication en français">📖 Lexique</button>
+  </div>
+  <div class="progbar"><div class="progfill" id="pf" style="width:4%"></div></div>
+  <div class="main">
+    <div class="sidebar" id="sb"></div>
+    <div class="contentwrap">
+      <div class="lhead">
+        <div class="ltitle" id="lt"></div>
+        <div class="ldesc" id="ld"></div>
+      </div>
+      <div class="lbody" id="lb"></div>
+      <div class="navfoot">
+        <button class="nbtn" id="bprev" onclick="nav(-1)" title="Retourner à la leçon précédente">← Précédent</button>
+        <button class="nbtn pri" id="bnext" onclick="nav(1)" title="Complétez les 3 exercices pour passer à la leçon suivante">Suivant →</button>
+        <span class="pinfo" id="pi"></span>
+      </div>
+    </div>
+    <div class="spanel" id="sp">
+      <div class="sph">📋 Structure BD <button class="spc" onclick="toggleSP()">✕ Fermer</button></div>
+      <div class="sbody" id="sbd"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Lexique -->
+<div class="lex-overlay" id="lex-modal" onclick="if(event.target===this)closeLexique()">
+  <div class="lex-panel">
+    <div class="lex-header">
+      <span class="lex-title">📖 Lexique SQL</span>
+      <button class="lex-close" onclick="closeLexique()">✕</button>
+    </div>
+    <div class="lex-search">
+      <input type="text" id="lex-q" placeholder="Chercher un mot-clé : SELECT, JOIN, GROUP BY…" oninput="filterLexique(this.value)">
+    </div>
+    <div class="lex-grid" id="lex-grid"></div>
+  </div>
+</div>
+
+<!-- Modal Stats -->
+<div class="stats-overlay" id="stats-modal" onclick="if(event.target===this)closeStats()">
+  <div class="stats-panel">
+    <div class="stats-header">
+      <span>📊 Progression par compétence SQL</span>
+      <button class="stats-close" onclick="closeStats()">✕</button>
+    </div>
+    <div class="stats-body">
+      <div class="stats-radar-wrap">
+        <div id="stats-radar"></div>
+      </div>
+      <div class="stats-levels" id="stats-levels"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Domaines disponibles — chaque fichier initialise window.DOMAINS s'il est premier chargé -->
+<!-- Ajouter un <script> par nouveau domaine -->
+<script src="js/domains/sante-hop.js"></script>
+<script src="js/tips.js"></script>
+
+<!-- Moteur SQL (SQLite WebAssembly) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js"></script>
+<script src="js/db.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
