@@ -13,6 +13,7 @@ let lvl='d',idx=0,exIdx=0,done=new Set(),exDone=new Set(),hintC={},queryCache={}
 const lmap={d:'Débutant',i:'Intermédiaire',a:'Avancé',e:'Expert'};
 function total(){return Object.values(ACTIVE_DOMAIN.cur).reduce((a,b)=>a+b.length,0);}
 
+
 // Retourne une clé unique identifiant l'exercice courant.
 // Utilisée pour indexer queryCache et hintC afin que chaque exercice
 // conserve sa propre requête et son propre compteur d'indices.
@@ -78,16 +79,20 @@ function lesson(){return lessons()[idx];}
 // ═══════════════════════════════════════
 
 // Redessine la barre latérale gauche avec toutes les leçons du niveau actif.
-// Marque la leçon active (▸), les leçons terminées (✓) et affiche le badge "Entretien" si hot:true.
+// Marque la leçon active (▸), les leçons terminées (✓), les leçons futures verrouillées (🔒).
 // Appelée par renderLesson() à chaque changement de leçon ou de niveau.
 function renderSB(){
+  const firstUndone=lessons().findIndex(l=>!done.has(l.id));
   document.getElementById('sb').innerHTML=
     '<div class="sb-lbl">'+lmap[lvl]+'</div>'+
-    lessons().map((l,i)=>`
-      <div class="sb-item ${i===idx?'active':''} ${done.has(l.id)?'done':''}" onclick="gol(${i})">
-        <span class="sbi">${done.has(l.id)?'✓':i===idx?'▸':'○'}</span>
-        <span style="flex:1;line-height:1.3">${l.title}${l.hot?'<span class="tag tag-hot">★ Entretien</span>':''}</span>
-      </div>`).join('');
+    lessons().map((l,i)=>{
+      const isDone=done.has(l.id);const isActive=i===idx;
+      const locked=firstUndone!==-1&&i>firstUndone;
+      return `<div class="sb-item ${isActive?'active':''} ${isDone?'done':''} ${locked?'locked':''}" ${locked?'title="Terminez la leçon précédente pour débloquer"':'onclick="gol('+i+')"'}>
+        <span class="sbi">${isDone?'✓':isActive?'▸':locked?'🔒':'○'}</span>
+        <span style="flex:1;line-height:1.3">${l.title}${l.hot&&!locked?'<span class="tag tag-hot">★ Entretien</span>':''}</span>
+      </div>`;
+    }).join('');
 }
 
 // Construit et injecte tout le contenu de la zone principale :
@@ -193,8 +198,8 @@ function renderSchema(){
 function setLevel(l){saveCurrentQuery();lvl=l;idx=0;exIdx=0;document.querySelectorAll('.lvl-btn').forEach(b=>b.classList.toggle('active',b.dataset.l===l));saveProgress();renderLesson();}
 
 // Saute directement à la leçon d'index i dans le niveau courant, repart au premier exercice.
-// Appelée par un clic sur un item de la barre latérale gauche.
-function gol(i){saveCurrentQuery();idx=i;exIdx=0;saveProgress();renderLesson();}
+// Bloqué si la leçon est au-delà de la première leçon non complétée (progression linéaire).
+function gol(i){const fu=lessons().findIndex(l=>!done.has(l.id));if(fu!==-1&&i>fu)return;saveCurrentQuery();idx=i;exIdx=0;saveProgress();renderLesson();}
 
 // Passe à la leçon suivante (d=+1) ou précédente (d=-1) dans le niveau courant.
 // Appelée par les boutons "← Précédent" et "Suivant →" en bas de page.
