@@ -11,24 +11,24 @@ const TIPS = {
     analogy: '📂 Imaginez un classeur avec plusieurs onglets : <i>patients</i>, <i>consultations</i>, <i>médecins</i>. <code>SELECT * FROM patients</code> revient à ouvrir l\'onglet patients et afficher toutes ses lignes.'
   },
   d2: {
-    simple: 'Au lieu d\'afficher toutes les colonnes avec <b>*</b>, on liste uniquement celles qui nous intéressent, séparées par des virgules.<br><br><b>AS</b> permet de renommer une colonne dans le résultat (alias) sans modifier la vraie base.',
-    analogy: '📋 Une fiche patient contient 10 champs. Dans votre rapport, vous n\'avez besoin que du nom et du diagnostic. <code>SELECT nom, diagnostic</code> fait exactement ça : il ne recopie que les colonnes utiles.'
+    simple: '<b>WHERE</b> filtre les lignes — il ne garde que celles qui correspondent à une condition.<br><br>Les opérateurs : <b>=</b> (égal), <b>!=</b> (différent), <b>&gt;</b> <b>&lt;</b> (supérieur/inférieur).<br>Texte entre guillemets simples <code>\'Cardiologie\'</code>, nombres sans guillemets <code>60</code>.',
+    analogy: '🔍 Chercher tous les patients de Cardiologie dans une liste de 1 000 fiches, c\'est long à la main. <code>WHERE service = \'Cardiologie\'</code> fait ce tri instantanément, comme un filtre dans Excel.'
   },
   d3: {
-    simple: '<b>WHERE</b> filtre les lignes — il ne garde que celles qui correspondent à une condition.<br><br>Les opérateurs de comparaison : <b>=</b> (égal), <b>!=</b> (différent), <b>&gt;</b> <b>&lt;</b> (supérieur/inférieur), <b>LIKE</b> (ressemble à, avec <b>%</b> comme joker).<br><b>AND</b> et <b>OR</b> combinent plusieurs conditions.',
-    analogy: '🔍 Chercher tous les patients de plus de 60 ans dans une liste de 1 000 fiches, c\'est long à la main. <code>WHERE age &gt; 60</code> fait ce tri instantanément, comme un filtre dans Excel.'
+    simple: '<b>AND</b> exige que toutes les conditions soient vraies. <b>OR</b> exige qu\'au moins une le soit.<br><br><b>BETWEEN</b> filtre une plage de valeurs (bornes incluses). <b>IN</b> vérifie si une valeur appartient à une liste de valeurs possibles.',
+    analogy: '🔎 <code>WHERE service IN (\'Cardiologie\', \'Neurologie\') AND age BETWEEN 30 AND 60</code> : patients des deux services ET dans cette tranche d\'âge. Sans AND/IN/BETWEEN, il faudrait écrire plusieurs conditions séparées.'
   },
   d4: {
-    simple: '<b>ORDER BY</b> trie les résultats selon une ou plusieurs colonnes.<br><b>ASC</b> = ordre croissant (A→Z, 1→100) — c\'est le défaut.<br><b>DESC</b> = ordre décroissant (Z→A, 100→1).<br><br>On peut trier sur plusieurs colonnes : d\'abord par service, puis par nom dans chaque service.',
-    analogy: '🗂️ Comme classer des fiches papier par ordre alphabétique de nom, ou par date d\'admission du plus récent au plus ancien.'
+    simple: '<b>NULL</b> signifie "valeur absente" — pas zéro, pas vide, mais inconnu. On ne peut pas tester NULL avec <b>=</b> : il faut <b>IS NULL</b> ou <b>IS NOT NULL</b>.<br><br><b>COALESCE(col, valeur)</b> remplace NULL par une valeur par défaut dans l\'affichage.',
+    analogy: '🏥 Un patient encore hospitalisé n\'a pas de date de sortie : <code>date_sortie IS NULL</code> le retrouve. <code>COALESCE(date_sortie, \'En cours\')</code> affiche "En cours" à la place du NULL.'
   },
   d5: {
-    simple: '<b>LIMIT</b> restreint le nombre de lignes retournées. Indispensable quand la table contient des milliers de lignes et qu\'on veut juste un aperçu.<br><br><b>OFFSET</b> saute les N premières lignes — utile pour la pagination (page 1, page 2…).',
-    analogy: '📄 Dans un annuaire de 10 000 médecins, vous ne voulez voir que les 10 premiers. <code>LIMIT 10</code> vous évite d\'attendre le téléchargement de toute la liste.'
+    simple: '<b>ORDER BY</b> trie les résultats selon une ou plusieurs colonnes.<br><b>ASC</b> = croissant (A→Z, 1→100) — c\'est le défaut. <b>DESC</b> = décroissant (Z→A, 100→1).<br><br><b>LIMIT</b> restreint le nombre de lignes retournées. Indispensable pour obtenir le "top N" d\'un classement.',
+    analogy: '🗂️ <code>ORDER BY salaire DESC LIMIT 3</code> : classer les médecins du mieux payé au moins bien payé, puis ne garder que les 3 premiers — comme un podium.'
   },
   d6: {
-    simple: 'SQL intègre des fonctions qui transforment les données à la volée :<br>• <b>UPPER/LOWER</b> : change la casse du texte<br>• <b>LENGTH</b> : compte les caractères<br>• <b>CONCAT</b> ou <b>||</b> : colle deux textes ensemble<br>• <b>ROUND</b> : arrondit un nombre<br>• <b>YEAR/MONTH</b> : extrait une partie d\'une date',
-    analogy: '🧮 Comme les formules dans Excel : <code>=MAJUSCULE(A1)</code> devient <code>UPPER(nom)</code> en SQL.'
+    simple: '<b>SELECT DISTINCT</b> élimine les doublons dans le résultat. Si dix patients sont dans le service Cardiologie, <code>SELECT DISTINCT service</code> retourne "Cardiologie" une seule fois.<br><br>On peut appliquer DISTINCT sur plusieurs colonnes : chaque combinaison unique compte.',
+    analogy: '📋 Comme l\'option "Supprimer les doublons" dans Excel — mais appliquée à la volée dans la requête, sans modifier les données originales.'
   },
 
   // ── Intermédiaire ─────────────────────────────────────────────────────────
@@ -41,12 +41,12 @@ const TIPS = {
     analogy: '📋 Avec INNER JOIN, un patient sans consultation disparaît du résultat. Avec LEFT JOIN, il reste visible — avec des cases vides pour la consultation. Idéal pour détecter les "oubliés".'
   },
   i3: {
-    simple: '<b>GROUP BY</b> regroupe les lignes selon une valeur commune, puis permet d\'appliquer des calculs par groupe.<br><br><b>COUNT(*)</b> compte les lignes du groupe. D\'autres fonctions : <b>SUM</b> (total), <b>AVG</b> (moyenne), <b>MAX/MIN</b> (extrêmes).',
-    analogy: '📊 Compter combien de patients sont dans chaque service. Sans GROUP BY vous obtenez une liste de 10 patients. Avec <code>GROUP BY service</code> vous obtenez 5 lignes : une par service avec son effectif.'
+    simple: 'Les <b>fonctions d\'agrégation</b> calculent une valeur à partir de plusieurs lignes :<br>• <b>COUNT(*)</b> : nombre total de lignes — <b>COUNT(col)</b> ignore les NULL<br>• <b>AVG</b> : moyenne<br>• <b>SUM</b> : total<br>• <b>MAX / MIN</b> : valeur la plus haute / la plus basse',
+    analogy: '🧮 Équivalent des formules Excel : COUNT → NB(), AVG → MOYENNE(), SUM → SOMME(), MAX/MIN → MAX()/MIN(). En SQL, elles s\'appliquent sur des colonnes entières de la base en une seule instruction.'
   },
   i4: {
-    simple: 'Les fonctions d\'agrégation calculent une valeur à partir de plusieurs lignes :<br>• <b>SUM</b> : additionne (total des durées de consultation)<br>• <b>AVG</b> : moyenne (âge moyen par service)<br>• <b>MAX/MIN</b> : valeur la plus haute/basse<br>• <b>GROUP_CONCAT</b> : colle tous les textes du groupe en une chaîne',
-    analogy: '🧮 C\'est l\'équivalent des formules SOMME(), MOYENNE(), MAX() d\'Excel, mais appliquées sur des groupes de lignes dynamiques.'
+    simple: '<b>GROUP BY</b> regroupe les lignes ayant la même valeur dans une colonne, puis permet d\'appliquer des fonctions d\'agrégation sur chaque groupe.<br><br><b>GROUP_CONCAT</b> concatène les textes d\'un groupe en une seule chaîne séparée par un délimiteur.',
+    analogy: '📊 Compter combien de patients sont dans chaque service. Sans GROUP BY vous obtenez une liste de 10 patients. Avec <code>GROUP BY service</code> vous obtenez 5 lignes : une par service avec son effectif.'
   },
   i5: {
     simple: '<b>HAVING</b> filtre les résultats après le regroupement GROUP BY. C\'est le WHERE des agrégats.<br><br>Règle : WHERE filtre les lignes AVANT le groupement. HAVING filtre les groupes APRÈS le calcul.',
@@ -57,38 +57,38 @@ const TIPS = {
     analogy: '🔗🔗 Patient → Consultation → Prescription → Médicament : 3 JOIN successifs permettent de répondre à "Quel médicament a été prescrit à chaque patient lors de quelle consultation ?"'
   },
   i7: {
-    simple: 'Une <b>sous-requête</b> est un SELECT imbriqué dans un autre. Celle placée dans <b>WHERE</b> permet de filtrer selon un résultat calculé dynamiquement.<br><br>Ex : WHERE id_patient IN (SELECT id_patient FROM consultations WHERE ...)',
-    analogy: '🪆 Comme une question dans une question : "Quels patients ont été vus par un médecin qui gagne plus de 9 000 € ?" Il faut d\'abord trouver ces médecins, puis chercher leurs patients.'
+    simple: '<b>LIKE</b> filtre du texte selon un motif. Deux wildcards (jokers) :<br>• <b>%</b> : remplace n\'importe quelle séquence de caractères (zéro ou plus)<br>• <b>_</b> : remplace exactement un caractère<br><br><code>\'%cardiaque%\'</code> trouve tout texte contenant "cardiaque", où qu\'il soit.',
+    analogy: '🔍 Comme la barre de recherche d\'un traitement de texte : <code>WHERE diagnostic LIKE \'%Cancer%\'</code> retrouve tous les diagnostics contenant ce mot, qu\'il soit au début, au milieu ou à la fin.'
   },
 
   // ── Avancé ────────────────────────────────────────────────────────────────
   a1: {
-    simple: '<b>WITH ... AS</b> crée une CTE (Common Table Expression) : une table temporaire nommée qu\'on réutilise dans la requête principale. Le résultat n\'est pas stocké en base — il n\'existe que le temps de la requête.',
-    analogy: '📝 Comme écrire un brouillon nommé en haut de la page, puis s\'y référer plus bas. Ça évite de répéter la même sous-requête 3 fois.'
+    simple: 'Une <b>sous-requête</b> est un SELECT imbriqué dans un autre. Elle peut apparaître :<br>• dans <b>WHERE</b> : pour filtrer selon un résultat calculé dynamiquement<br>• dans <b>FROM</b> : pour créer une table temporaire<br>• dans <b>SELECT</b> : pour ajouter une colonne calculée',
+    analogy: '🪆 "Listez les patients plus âgés que la moyenne" — il faut d\'abord calculer la moyenne, puis comparer. La sous-requête calcule cette valeur à l\'intérieur de la requête principale : <code>WHERE age > (SELECT AVG(age) FROM patients)</code>'
   },
   a2: {
-    simple: 'Plusieurs CTEs peuvent se chaîner : la deuxième peut utiliser la première, la troisième peut utiliser les deux précédentes. Cela permet de décomposer une logique complexe en étapes lisibles.',
-    analogy: '🏗️ Construire un résultat complexe étape par étape, comme des briques posées les unes sur les autres, plutôt qu\'une seule formule monstrueuse.'
+    simple: '<b>WITH … AS</b> crée une CTE (Common Table Expression) : une table temporaire nommée, définie en haut de la requête et réutilisée ensuite. Elle rend le code plus lisible qu\'une sous-requête imbriquée.<br><br>La CTE n\'est pas stockée en base — elle n\'existe que pendant l\'exécution de la requête.',
+    analogy: '📝 Comme écrire un brouillon nommé en haut de la page ("patients seniors = ceux de 65 ans et plus"), puis s\'y référer plus bas. Au lieu d\'écrire la définition plusieurs fois, on lui donne un nom.'
   },
   a3: {
     simple: '<b>CASE WHEN</b> est un "si/alors/sinon" dans SQL. Il crée une nouvelle colonne calculée dont la valeur dépend d\'une condition.<br><br>Structure : CASE WHEN condition THEN valeur ELSE autre_valeur END',
     analogy: '💊 "Si l\'âge est supérieur à 65, afficher \'Gériatrie\', sinon afficher \'Standard\'." C\'est exactement la fonction SI() d\'Excel, en plus flexible.'
   },
   a4: {
-    simple: 'Une <b>sous-requête corrélée</b> fait référence à la requête externe — elle se recalcule pour chaque ligne de la table principale. Plus puissant, mais plus lent sur de grandes tables.',
-    analogy: '🔄 Pour chaque patient, calculer combien de consultations il a eues. La sous-requête doit connaître l\'ID du patient courant pour filtrer ses consultations.'
+    simple: 'Pour trouver les doublons : regroupez avec <b>GROUP BY</b> sur la colonne à tester, puis filtrez avec <b>HAVING COUNT(*) &gt; 1</b> pour ne garder que les groupes ayant plusieurs lignes.<br><br>C\'est la question classique d\'entretien : "Comment détecter les doublons ?"',
+    analogy: '🔁 Si un patient apparaît deux fois dans consultations, son id_patient aura COUNT(*) = 2. <code>HAVING COUNT(*) > 1</code> isole exactement ces cas — comme le filtre "doublons" dans Excel.'
   },
   a5: {
-    simple: 'Un <b>self join</b> relie une table à elle-même. Utile quand les lignes d\'une même table ont une relation hiérarchique (manager/employé, médecin référent/médecin traitant).',
-    analogy: '👥 Joindre la table médecins avec elle-même pour trouver les médecins qui exercent dans le même service qu\'un autre médecin donné.'
+    simple: 'Pour trouver les éléments d\'une table qui n\'ont <b>aucune correspondance</b> dans une autre, deux approches :<br>• <b>LEFT JOIN + IS NULL</b> : jointure gauche, puis filtrer les lignes sans correspondance<br>• <b>NOT IN (sous-requête)</b> : exclure les IDs présents dans l\'autre table',
+    analogy: '🔍 "Quels patients n\'ont aucune consultation ?" Avec LEFT JOIN, ils apparaissent avec des colonnes NULL côté consultations. <code>WHERE c.id_consultation IS NULL</code> les isole.'
   },
   a6: {
-    simple: 'SQL propose des fonctions pour manipuler les chaînes de caractères :<br>• <b>UPPER/LOWER</b> : casse<br>• <b>TRIM</b> : supprime les espaces en début/fin<br>• <b>REPLACE</b> : remplace un texte par un autre<br>• <b>LEFT/RIGHT</b> : extrait N caractères depuis la gauche ou la droite<br>• <b>LENGTH</b> : longueur du texte',
-    analogy: '✂️ Comme les fonctions texte d\'Excel (GAUCHE, DROITE, SUPPRIMER, SUBSTITUE), appliquées sur des colonnes entières en une seule requête.'
+    simple: 'SQL propose des fonctions pour manipuler les dates :<br>• <b>YEAR(date) / MONTH(date)</b> : extrait l\'année ou le mois<br>• Ces fonctions permettent de grouper des données par mois, année, trimestre…<br><br>Exemple : compter les consultations par mois avec <code>GROUP BY MONTH(date_consultation)</code>.',
+    analogy: '📅 Grouper les consultations par mois pour voir les pics d\'activité saisonniers, sans trier manuellement chaque date. <code>MONTH(date_admission)</code> retourne un nombre de 1 à 12.'
   },
   a7: {
-    simple: 'SQL permet d\'extraire des parties d\'une date ou de calculer des intervalles :<br>• <b>YEAR/MONTH</b> : extrait l\'année ou le mois<br>• <b>DATE_PART / EXTRACT</b> : extraction flexible<br>• Ces fonctions permettent de grouper des données par mois, année, trimestre…',
-    analogy: '📅 Grouper les consultations par mois pour voir les pics d\'activité saisonniers, sans avoir à trier manuellement chaque date.'
+    simple: '<b>COALESCE(a, b)</b> retourne la première valeur non-NULL de sa liste. Si <code>a</code> est NULL, retourne <code>b</code>.<br><br><b>NULLIF(a, b)</b> retourne NULL si <code>a = b</code>, sinon retourne <code>a</code>. Souvent utilisé pour éviter une division par zéro.',
+    analogy: '🏥 <code>COALESCE(date_sortie, \'En cours\')</code> : si la date de sortie est NULL (patient encore hospitalisé), affiche "En cours". <code>NULLIF(prix, 0)</code> : retourne NULL si le prix vaut 0, évitant une division par zéro.'
   },
 
   // ── Expert ────────────────────────────────────────────────────────────────
@@ -97,60 +97,60 @@ const TIPS = {
     analogy: '📊 Calculer le rang de chaque patient dans son service selon son âge, sans fusionner les lignes de patients. Chaque patient reste visible avec son rang calculé à côté.'
   },
   e2: {
-    simple: '<b>RANK()</b> attribue un rang (avec égalités et sauts). <b>DENSE_RANK()</b> attribue un rang sans sauts. <b>ROW_NUMBER()</b> numérote chaque ligne uniquement.<br><br>Ex : 3 ex-aequo en 1ère position → RANK donne 1,1,1,4 — DENSE_RANK donne 1,1,1,2.',
-    analogy: '🏆 Au classement sportif : 2 patients ex-aequo 1ers. RANK saute le rang 2 (1,1,3). DENSE_RANK ne saute pas (1,1,2). ROW_NUMBER les distingue arbitrairement (1,2,3).'
+    simple: '<b>SUM() OVER (ORDER BY …)</b> calcule un <b>total cumulé</b> : chaque ligne affiche la somme de toutes les lignes précédentes plus la sienne.<br><br><b>AVG() OVER (ORDER BY …)</b> calcule une <b>moyenne glissante</b> : la moyenne de toutes les lignes vues jusqu\'à la courante.',
+    analogy: '📈 Sur un relevé bancaire, le "solde courant" est un cumul : chaque ligne ajoute le montant au total précédent. <code>SUM(cout_journalier) OVER (ORDER BY id_hosp)</code> fait exactement ça sur les hospitalisations.'
   },
   e3: {
     simple: '<b>LAG(col, n)</b> accède à la valeur de la ligne N rangs avant dans la fenêtre. <b>LEAD(col, n)</b> accède à la ligne N rangs après. Permet des calculs de variation entre lignes consécutives.',
     analogy: '⏪⏩ Sur une série de consultations triées par date : LAG(date_consultation, 1) donne la date de la consultation précédente. Permet de calculer le délai entre deux visites.'
   },
   e4: {
-    simple: 'Une sous-requête dans <b>FROM</b> crée une table temporaire (table dérivée) qu\'on traite comme une vraie table. On peut y joindre d\'autres tables et y appliquer WHERE/GROUP BY.',
-    analogy: '🧩 Calculer d\'abord les totaux par médecin, puis filtrer ceux dont le total dépasse un seuil. La première étape devient une "mini-table" que la requête extérieure exploite.'
+    simple: 'Trouver la 2ème valeur la plus haute : deux approches :<br>• <b>LIMIT + OFFSET</b> : trier en DESC et sauter la 1ère ligne avec <code>OFFSET 1</code><br>• <b>Sous-requête</b> : <code>SELECT MAX(col) WHERE col &lt; (SELECT MAX(col) …)</code><br><br>DISTINCT évite que des valeurs égales bloquent le résultat.',
+    analogy: '🥈 "Quel est le 2ème salaire le plus élevé ?" Avec OFFSET : classer, puis sauter la 1ère ligne. Sans OFFSET : prendre le max des salaires inférieurs au max absolu.'
   },
   e5: {
-    simple: '<b>INSERT INTO</b> ajoute une nouvelle ligne dans une table. On précise les colonnes concernées et les valeurs à insérer dans le même ordre.<br><br>Attention : les contraintes (types, clés étrangères) sont vérifiées à l\'insertion.',
-    analogy: '📝 Admettre un nouveau patient en base : on remplit son dossier (les colonnes) avec ses informations (les valeurs). La BD vérifie que tout est cohérent avant de l\'accepter.'
+    simple: 'Un <b>index</b> est une structure qui accélère les recherches sur une colonne — comme l\'index d\'un livre qui évite de lire toutes les pages.<br><br><b>EXPLAIN</b> affiche le plan d\'exécution d\'une requête : comment SQL va la résoudre, si un index est utilisé, combien de lignes seront parcourues.',
+    analogy: '📚 Sans index, SQL lit chaque ligne de la table (scan complet). Avec <code>CREATE INDEX idx_service ON patients(service)</code>, les recherches <code>WHERE service = \'Cardiologie\'</code> deviennent quasi-instantanées.'
   },
   e6: {
     simple: '<b>UNION</b> combine les résultats de deux SELECT en empilant les lignes. Les colonnes doivent correspondre en nombre et en type.<br><b>UNION ALL</b> garde les doublons. <b>UNION</b> les supprime.',
     analogy: '📚 Fusionner deux listes de patients (deux hôpitaux différents) en une seule. UNION supprime les doublons si un patient apparaît dans les deux listes. UNION ALL garde tout.'
   },
   e7: {
-    simple: '<b>FULL JOIN</b> (FULL OUTER JOIN) retourne toutes les lignes des deux tables, qu\'elles aient une correspondance ou non. Les colonnes sans correspondance sont NULL des deux côtés.',
-    analogy: '🔀 LEFT JOIN garde tous les patients. RIGHT JOIN garde tous les médecins. FULL JOIN garde tout le monde — même un médecin sans patient et un patient sans médecin assigné.'
+    simple: '<b>EXISTS</b> retourne vrai si la sous-requête retourne au moins une ligne. <b>NOT EXISTS</b> retourne vrai si elle est vide.<br><br>Plus performant que IN sur les grandes tables : SQL s\'arrête dès qu\'il trouve une première correspondance.',
+    analogy: '✅ "Le patient a-t-il au moins une consultation ?" EXISTS vérifie l\'existence sans récupérer toutes les données. Comme demander "y a-t-il un médecin disponible ?" plutôt que "liste tous les médecins disponibles."'
   },
   e8: {
     simple: 'Fonctions avancées de chaînes : <b>SUBSTRING/SUBSTR</b> extrait une portion de texte à partir d\'une position. <b>INSTR</b> trouve la position d\'un caractère. Utiles pour nettoyer ou transformer des données textuelles.',
     analogy: '✂️ Extraire le code postal des 5 derniers caractères d\'une adresse, ou trouver la position du tiret dans un code de chambre "A-101".'
   },
   e9: {
-    simple: 'Des fonctions plus avancées permettent de calculer des valeurs à partir de chaînes : <b>CAST</b> convertit un type (texte → nombre), <b>COALESCE</b> remplace NULL par une valeur par défaut.',
-    analogy: '🔄 COALESCE(date_sortie, \'En cours\') : si la date de sortie est NULL (patient encore hospitalisé), affiche "En cours" à la place de NULL.'
+    simple: '<b>CONCAT(a, b, c)</b> assemble plusieurs textes en un seul. On peut aussi utiliser l\'opérateur <b>||</b> (standard SQL).<br><br>Utile pour construire des noms complets, des libellés formatés, ou des clés composites directement dans la requête.',
+    analogy: '🔤 <code>CONCAT(prenom, \' \', nom)</code> crée "Sophie Martin" à partir de deux colonnes séparées — comme la formule <code>=A1&" "&B1</code> dans Excel, mais appliquée à toute la table d\'un coup.'
   },
   e10: {
-    simple: '<b>INSERT INTO</b> ajoute des lignes. <b>UPDATE ... SET</b> modifie des lignes existantes. Toujours utiliser <b>WHERE</b> avec UPDATE pour ne modifier que les lignes voulues — sans WHERE, TOUTES les lignes sont modifiées.',
-    analogy: '⚠️ UPDATE sans WHERE = modifier tous les dossiers d\'un coup. C\'est l\'équivalent d\'effacer et réécrire toutes les fiches à la main. Toujours cibler avec WHERE !'
+    simple: '<b>INSERT INTO</b> ajoute une nouvelle ligne dans une table. On précise les colonnes et les valeurs dans le même ordre.<br><br>Les colonnes omises reçoivent NULL ou leur valeur par défaut. Les textes vont entre guillemets simples, les nombres sans.',
+    analogy: '📝 Admettre un nouveau patient en base : on remplit les colonnes (nom, age, service…) avec ses informations. La BD vérifie la cohérence des types avant d\'accepter la nouvelle ligne.'
   },
   e11: {
-    simple: '<b>DELETE FROM</b> supprime des lignes. Comme UPDATE, <b>WHERE est indispensable</b> pour cibler les bonnes lignes. Sans WHERE, toute la table est vidée.<br><br>La table reste — seules ses lignes sont supprimées.',
-    analogy: '🗑️ Supprimer le dossier d\'un patient qui a quitté l\'établissement. DELETE supprime sa ligne. La table patients reste intacte pour tous les autres.'
+    simple: '<b>UPDATE … SET</b> modifie des lignes existantes. La clause <b>WHERE</b> est indispensable pour cibler les bonnes lignes — sans WHERE, <b>toutes les lignes</b> de la table sont modifiées.<br><br>On peut modifier plusieurs colonnes en même temps en séparant les affectations par des virgules.',
+    analogy: '⚠️ UPDATE sans WHERE = modifier tous les dossiers patients d\'un coup. Toujours cibler : <code>UPDATE patients SET statut = \'Hospitalisé\' WHERE id_patient = 3</code>.'
   },
   e12: {
     simple: 'Combinaison de DML (INSERT, UPDATE, DELETE) dans des scénarios réalistes : mettre à jour un salaire puis vérifier le résultat, ajouter une prescription puis la lire, etc.',
     analogy: '🔄 En pratique, les bases de données sont modifiées en permanence. Maîtriser INSERT + UPDATE + DELETE permet de maintenir les données à jour et cohérentes.'
   },
   e13: {
-    simple: '<b>CREATE TABLE</b> crée une nouvelle table avec ses colonnes et leurs types. <b>ALTER TABLE ADD</b> ajoute une colonne à une table existante sans la recréer.',
-    analogy: '📋 Créer un nouveau formulaire de saisie (CREATE TABLE), ou ajouter un nouveau champ à un formulaire existant (ALTER TABLE ADD).'
+    simple: 'Une <b>vue</b> est une table virtuelle définie par une requête SELECT. Elle ne stocke pas de données — elle les calcule à la demande.<br><br><b>CREATE VIEW nom AS SELECT …</b> crée la vue. Elle s\'utilise ensuite comme une table ordinaire. <b>DROP VIEW</b> la supprime.',
+    analogy: '🪟 Comme un onglet Excel qui affiche automatiquement les résultats d\'une formule. La vue <code>vue_seniors</code> filtre toujours les patients de 65 ans et plus, même si de nouveaux patients sont ajoutés.'
   },
   e14: {
     simple: 'Les types de données définissent ce qu\'une colonne peut stocker :<br>• <b>INTEGER</b> : nombre entier<br>• <b>REAL / DECIMAL</b> : nombre décimal<br>• <b>TEXT / VARCHAR</b> : texte<br>• <b>DATE / DATETIME</b> : date et heure<br><br>Choisir le bon type garantit l\'intégrité des données.',
     analogy: '📏 Comme choisir le bon type de case sur un formulaire : case à cocher (booléen), champ numérique (INTEGER), champ texte libre (TEXT), calendrier (DATE).'
   },
   e15: {
-    simple: '<b>NTILE(n)</b> divise les lignes en n groupes de taille égale (quartiles, déciles…). <b>PERCENT_RANK()</b> calcule le rang en pourcentage (0 = plus bas, 1 = plus haut).',
-    analogy: '📊 Diviser les patients en 4 groupes selon leur âge (NTILE(4)) : les 25% les plus jeunes, les 25-50%, les 50-75%, et les 25% les plus âgés. Utile en épidémiologie.'
+    simple: '<b>DENSE_RANK()</b> attribue un rang sans saut en cas d\'égalité (1,1,2 — pas 1,1,3 comme RANK).<br><br><b>NTILE(n)</b> divise les lignes en n groupes de taille égale : quartiles avec NTILE(4), déciles avec NTILE(10).',
+    analogy: '📊 DENSE_RANK : deux ex-aequo en 1ère place → le suivant est 2ème, pas 3ème. NTILE(4) : diviser les patients en 4 groupes d\'âge égaux pour une analyse épidémiologique par tranche.'
   },
   e16: {
     simple: '<b>FIRST_VALUE / LAST_VALUE</b> retournent la première ou dernière valeur dans une fenêtre. <b>SUM() OVER</b> calcule un cumul progressif (running total) ligne par ligne.',
@@ -161,12 +161,12 @@ const TIPS = {
     analogy: '📉 La durée moyenne des consultations est 45 min. Mais si la variance est élevée, certaines durent 10 min et d\'autres 120 min. La moyenne seule peut être trompeuse.'
   },
   e18: {
-    simple: '<b>GROUP_CONCAT</b> (ou STRING_AGG) concatène les valeurs texte d\'un groupe en une seule chaîne, séparées par un délimiteur choisi.',
-    analogy: '🔤 Lister tous les diagnostics d\'un patient en une seule cellule : "Hypertension, Arythmie, Contrôle tensionnel" plutôt que 3 lignes séparées.'
+    simple: '<b>PERCENT_RANK()</b> calcule la position relative d\'une ligne entre 0 et 1 :<br>• 0 = valeur la plus basse<br>• 1 = valeur la plus haute<br>• 0.5 = médiane<br><br>Formule : (rang - 1) / (nombre total de lignes - 1).',
+    analogy: '📉 Un médecin avec PERCENT_RANK = 0.75 sur le salaire gagne plus que 75% de ses collègues. Utile pour comparer une valeur à sa position dans la distribution sans connaître les valeurs absolues.'
   },
   e19: {
-    simple: 'Les <b>CTEs récursives</b> (WITH RECURSIVE) permettent à une CTE de s\'appeler elle-même pour traverser des hiérarchies (organigrammes, catégories imbriquées, graphes).',
-    analogy: '🌳 Trouver tous les subordonnés d\'un directeur médical, puis leurs subordonnés, etc. La récursivité descend l\'arbre hiérarchique jusqu\'aux feuilles.'
+    simple: 'Les requêtes complexes combinent plusieurs techniques : <b>JOIN</b> pour relier les tables, <b>GROUP BY</b> pour agréger, <b>HAVING</b> pour filtrer les groupes, <b>ORDER BY</b> pour trier.<br><br>Ordre d\'exécution SQL : FROM → JOIN → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT.',
+    analogy: '🏗️ Comme assembler plusieurs outils en une seule requête : "Pour chaque médecin ayant fait au moins 2 consultations, calculer la durée totale et trier par durée décroissante."'
   },
   e20: {
     simple: '<b>CASE WHEN</b> avancé : on peut imbriquer des CASE, les utiliser dans GROUP BY, ORDER BY, ou les combiner avec des agrégats. Très puissant pour créer des catégories dynamiques.',

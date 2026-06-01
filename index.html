@@ -17,13 +17,13 @@
       <div class="domain-menu" id="domain-menu" onclick="event.stopPropagation()"></div>
     </div>
     <div class="lvl-tabs">
-      <button class="lvl-btn active" data-l="d" onclick="setLevel('d')" title="Niveau Débutant — SELECT, WHERE, ORDER BY, LIMIT : les bases pour lire des données">Débutant</button>
-      <button class="lvl-btn" data-l="i" onclick="setLevel('i')" title="Niveau Intermédiaire — JOIN, GROUP BY, sous-requêtes : combiner et agréger les données">Intermédiaire</button>
-      <button class="lvl-btn" data-l="a" onclick="setLevel('a')" title="Niveau Avancé — CTE, fonctions de fenêtre, CASE, chaînes et dates">Avancé</button>
-      <button class="lvl-btn" data-l="e" onclick="setLevel('e')" title="Niveau Expert — DML, DDL, transactions, optimisation, opérations ensemblistes">Expert</button>
+      <button class="lvl-btn active" data-l="d" onclick="setLevel('d')" title="Niveau Débutant — SELECT, WHERE, ORDER BY, LIMIT : les bases pour lire des données"><span class="full">Débutant</span><span class="short">Déb.</span></button>
+      <button class="lvl-btn" data-l="i" onclick="setLevel('i')" title="Niveau Intermédiaire — JOIN, GROUP BY, sous-requêtes : combiner et agréger les données"><span class="full">Intermédiaire</span><span class="short">Inter.</span></button>
+      <button class="lvl-btn" data-l="a" onclick="setLevel('a')" title="Niveau Avancé — CTE, fonctions de fenêtre, CASE, chaînes et dates"><span class="full">Avancé</span><span class="short">Avc.</span></button>
+      <button class="lvl-btn" data-l="e" onclick="setLevel('e')" title="Niveau Expert — DML, DDL, transactions, optimisation, opérations ensemblistes"><span class="full">Expert</span><span class="short">Exp.</span></button>
     </div>
-    <button class="stats-btn" onclick="openStats()" title="Voir votre progression par catégorie SQL sous forme de radar et de barres par niveau">📊 Compétences</button>
-    <button class="stats-btn" onclick="openLexique()" title="Dictionnaire des commandes SQL — cherchez un mot-clé et obtenez son explication en français">📖 Lexique</button>
+    <button class="stats-btn" onclick="openStats()" title="Voir votre progression par catégorie SQL sous forme de radar et de barres par niveau">📊 <span class="btn-label">Compétences</span></button>
+    <button class="stats-btn" onclick="openLexique()" title="Dictionnaire des commandes SQL — cherchez un mot-clé et obtenez son explication en français">📖 <span class="btn-label">Lexique</span></button>
   </div>
   <div class="progbar"><div class="progfill" id="pf" style="width:4%"></div></div>
   <div class="main">
