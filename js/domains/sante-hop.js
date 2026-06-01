@@ -113,7 +113,7 @@ const SKILL_MAP = {
   'CTE / Sous-req.':  ['a1','a2','e4','e19'],
   'Fenêtrage':        ['e1','e2','e3','e15','e16'],
   'DML / DDL':        ['e10','e11','e12','e5','e13','e14'],
-  'Chaînes & Dates':  ['a6','a7','e8','e9','e22','e23'],
+  'Chaînes & Dates':  ['d7','a6','a7','e8','e9','e22','e23'],
   'CASE & Ensembles': ['a3','e6','e20','e21'],
 };
 
@@ -212,6 +212,30 @@ d:[
     hints:['SELECT DISTINCT colonne FROM table;','La colonne s\'appelle specialite dans la table medecins.','SELECT DISTINCT specialite FROM medecins;']},
    {task:'Listez toutes les combinaisons distinctes de <b>service</b> et <b>statut</b> des patients.',
     hints:['SELECT DISTINCT col1, col2 retourne des paires uniques.','SELECT DISTINCT service, statut FROM patients;','Chaque paire (service, statut) n\'apparaît qu\'une seule fois.']},
+  ]},
+
+ {id:'d7',title:'7. Fonctions – UPPER, LOWER, LENGTH, CONCAT, ROUND, YEAR',hot:false,
+  desc:'Transformer les données à la volée : casse, longueur, concaténation, arrondi, extraction de date.',
+  concept:`<span class="cm">-- Casse du texte :</span>
+<span class="fn">UPPER</span>(nom)           <span class="cm">→ 'MARTIN'</span>
+<span class="fn">LOWER</span>(nom)           <span class="cm">→ 'martin'</span>
+<span class="fn">LENGTH</span>(nom)          <span class="cm">→ 6 (nombre de caractères)</span>
+
+<span class="cm">-- Assembler du texte :</span>
+<span class="fn">CONCAT</span>(prenom, <span class="str">' '</span>, nom)  <span class="cm">→ 'Sophie Martin'</span>
+prenom || <span class="str">' '</span> || nom        <span class="cm">→ même résultat (opérateur ||)</span>
+
+<span class="cm">-- Nombres et dates :</span>
+<span class="fn">ROUND</span>(prix_unitaire, <span class="num">1</span>)   <span class="cm">→ 0.2 (arrondi à 1 décimale)</span>
+<span class="fn">YEAR</span>(date_admission)      <span class="cm">→ 2024</span>
+<span class="fn">MONTH</span>(date_admission)     <span class="cm">→ 11</span>`,
+  exercises:[
+   {task:'Affichez le <b>nom en majuscules</b> (colonne <b>nom_maj</b>), le <b>prénom en minuscules</b> (colonne <b>prenom_min</b>) et la <b>longueur du nom</b> (colonne <b>longueur_nom</b>) pour chaque patient.',
+    hints:['UPPER(nom) AS nom_maj, LOWER(prenom) AS prenom_min, LENGTH(nom) AS longueur_nom','SELECT ... FROM patients','SELECT UPPER(nom) AS nom_maj, LOWER(prenom) AS prenom_min, LENGTH(nom) AS longueur_nom FROM patients;']},
+   {task:'Affichez le <b>nom complet</b> (prénom + espace + nom) dans une colonne <b>nom_complet</b> et le <b>mois d\'admission</b> dans une colonne <b>mois</b> pour chaque patient.',
+    hints:['CONCAT(prenom, \' \', nom) AS nom_complet','MONTH(date_admission) AS mois','SELECT CONCAT(prenom, \' \', nom) AS nom_complet, MONTH(date_admission) AS mois FROM patients;']},
+   {task:'Depuis la table <b>medicaments</b>, affichez le <b>nom du médicament</b>, son <b>prix unitaire original</b> et son <b>prix arrondi à 1 décimale</b> (colonne <b>prix_arrondi</b>).',
+    hints:['ROUND(prix_unitaire, 1) AS prix_arrondi','SELECT nom_medicament, prix_unitaire, ROUND(...) AS prix_arrondi FROM medicaments;','SELECT nom_medicament, prix_unitaire, ROUND(prix_unitaire, 1) AS prix_arrondi FROM medicaments;']},
   ]},
 ],
 i:[

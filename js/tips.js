@@ -31,6 +31,11 @@ const TIPS = {
     analogy: '📋 Comme l\'option "Supprimer les doublons" dans Excel — mais appliquée à la volée dans la requête, sans modifier les données originales.'
   },
 
+  d7: {
+    simple: 'SQL intègre des fonctions qui transforment les données à la volée :<br>• <b>UPPER / LOWER</b> : met le texte en majuscules ou minuscules<br>• <b>LENGTH</b> : compte le nombre de caractères<br>• <b>CONCAT</b> ou <b>||</b> : colle plusieurs textes ensemble<br>• <b>ROUND(n, d)</b> : arrondit un nombre à d décimales<br>• <b>YEAR / MONTH</b> : extrait l\'année ou le mois d\'une date',
+    analogy: '🧮 Comme les formules dans Excel : <code>=MAJUSCULE(A1)</code> → <code>UPPER(nom)</code>, <code>=NBCAR(A1)</code> → <code>LENGTH(nom)</code>, <code>=ARRONDI(A1,1)</code> → <code>ROUND(prix,1)</code>. En SQL, ces fonctions s\'appliquent sur toutes les lignes d\'un coup.'
+  },
+
   // ── Intermédiaire ─────────────────────────────────────────────────────────
   i1: {
     simple: '<b>JOIN</b> (ou INNER JOIN) relie deux tables via une colonne commune — la clé étrangère (FK). Le résultat ne contient que les lignes qui ont une correspondance dans les deux tables.',
