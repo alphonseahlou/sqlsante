@@ -32,8 +32,8 @@ const TIPS = {
   },
 
   d7: {
-    simple: 'SQL intègre des fonctions qui transforment les données à la volée :<br>• <b>UPPER / LOWER</b> : met le texte en majuscules ou minuscules<br>• <b>LENGTH</b> : compte le nombre de caractères<br>• <b>CONCAT</b> ou <b>||</b> : colle plusieurs textes ensemble<br>• <b>ROUND(n, d)</b> : arrondit un nombre à d décimales<br>• <b>YEAR / MONTH</b> : extrait l\'année ou le mois d\'une date',
-    analogy: '🧮 Comme les formules dans Excel : <code>=MAJUSCULE(A1)</code> → <code>UPPER(nom)</code>, <code>=NBCAR(A1)</code> → <code>LENGTH(nom)</code>, <code>=ARRONDI(A1,1)</code> → <code>ROUND(prix,1)</code>. En SQL, ces fonctions s\'appliquent sur toutes les lignes d\'un coup.'
+    simple: 'SQL intègre des fonctions qui transforment les données <b>à la volée</b>, sans modifier la base :<br>• <b>UPPER(nom)</b> → <code>\'MARTIN\'</code> &nbsp;/&nbsp; <b>LOWER(prenom)</b> → <code>\'sophie\'</code><br>• <b>LENGTH(nom)</b> → <code>6</code> (nombre de caractères)<br>• <b>CONCAT(prenom, \' \', nom)</b> → <code>\'Sophie Martin\'</code><br>• <b>ROUND(prix_unitaire, 1)</b> → <code>0.2</code> (arrondi à 1 décimale)<br>• <b>MONTH(date_admission)</b> → <code>11</code> &nbsp;/&nbsp; <b>YEAR(date_admission)</b> → <code>2024</code>',
+    analogy: '🧮 Chaque fonction correspond à une formule Excel :<br>• <code>UPPER(nom)</code> = <code>=MAJUSCULE(A1)</code><br>• <code>LENGTH(nom)</code> = <code>=NBCAR(A1)</code><br>• <code>CONCAT(prenom,\' \',nom)</code> = <code>=CONCATENER(A1," ",B1)</code><br>• <code>ROUND(prix,1)</code> = <code>=ARRONDI(A1,1)</code><br>• <code>MONTH(date)</code> = <code>=MOIS(A1)</code><br>En SQL, elles s\'appliquent sur <b>toutes les lignes d\'un coup</b>.'
   },
 
   // ── Intermédiaire ─────────────────────────────────────────────────────────
