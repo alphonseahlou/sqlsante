@@ -31,6 +31,14 @@ const TIPS = {
     analogy: '📋 Comme l\'option "Supprimer les doublons" dans Excel — mais appliquée à la volée dans la requête, sans modifier les données originales.'
   },
 
+  d8: {
+    simple: '<b>OFFSET</b> saute les N premières lignes avant d\'afficher les résultats. Combiné à <b>LIMIT</b>, il permet de paginer :<br>• <code>LIMIT 3 OFFSET 0</code> → page 1 (lignes 1–3)<br>• <code>LIMIT 3 OFFSET 3</code> → page 2 (lignes 4–6)<br>• <code>LIMIT 3 OFFSET 6</code> → page 3 (lignes 7–9)',
+    analogy: '📖 Comme sauter des pages dans un livre : LIMIT = nombre de pages à lire, OFFSET = nombre de pages à ignorer avant de commencer. Pour aller directement au chapitre 3 (3 pages par chapitre) : <code>LIMIT 3 OFFSET 6</code>.'
+  },
+  d9: {
+    simple: 'Pour afficher <b>X% des données</b>, calculez le nombre de lignes correspondant :<br>• <b>Manuel</b> : total × (X ÷ 100) = N, puis <code>LIMIT N</code><br>• <b>Dynamique</b> : <code>LIMIT (SELECT CAST(COUNT(*) * 0.30 AS INT) FROM table)</code><br><br><b>CAST(… AS INT)</b> convertit le résultat décimal en entier (arrondi inférieur).',
+    analogy: '📊 Vous avez 10 patients et voulez voir 30% des cas → 10 × 0,30 = 3. En SQL : <code>LIMIT 3</code>. La version dynamique calcule ce chiffre automatiquement, même si la table passe à 1 000 patients.'
+  },
   d7: {
     simple: 'SQL intègre des fonctions qui transforment les données <b>à la volée</b>, sans modifier la base :<br>• <b>UPPER(nom)</b> → <code>\'MARTIN\'</code> &nbsp;/&nbsp; <b>LOWER(prenom)</b> → <code>\'sophie\'</code><br>• <b>LENGTH(nom)</b> → <code>6</code> (nombre de caractères)<br>• <b>CONCAT(prenom, \' \', nom)</b> → <code>\'Sophie Martin\'</code><br>• <b>ROUND(prix_unitaire, 1)</b> → <code>0.2</code> (arrondi à 1 décimale)<br>• <b>MONTH(date_admission)</b> → <code>11</code> &nbsp;/&nbsp; <b>YEAR(date_admission)</b> → <code>2024</code>',
     analogy: '🧮 Chaque fonction correspond à une formule Excel :<br>• <code>UPPER(nom)</code> = <code>=MAJUSCULE(A1)</code><br>• <code>LENGTH(nom)</code> = <code>=NBCAR(A1)</code><br>• <code>CONCAT(prenom,\' \',nom)</code> = <code>=CONCATENER(A1," ",B1)</code><br>• <code>ROUND(prix,1)</code> = <code>=ARRONDI(A1,1)</code><br>• <code>MONTH(date)</code> = <code>=MOIS(A1)</code><br>En SQL, elles s\'appliquent sur <b>toutes les lignes d\'un coup</b>.'

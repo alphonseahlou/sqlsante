@@ -107,7 +107,7 @@ INSERT INTO hospitalisations VALUES
 // Associe chaque catégorie aux IDs de leçons qui la couvrent.
 // À mettre à jour si de nouvelles leçons sont ajoutées au curriculum.
 const SKILL_MAP = {
-  'SELECT & Filtres': ['d1','d2','d3','d4','d5','d6','i7'],
+  'SELECT & Filtres': ['d1','d2','d3','d4','d5','d6','d8','d9','i7'],
   'Jointures':        ['i1','i2','i6','a5','e7'],
   'Agrégation':       ['i3','i4','i5','a4','e17','e18'],
   'CTE / Sous-req.':  ['a1','a2','e4','e19'],
@@ -212,6 +212,44 @@ d:[
     hints:['SELECT DISTINCT colonne FROM table;','La colonne s\'appelle specialite dans la table medecins.','SELECT DISTINCT specialite FROM medecins;']},
    {task:'Listez toutes les combinaisons distinctes de <b>service</b> et <b>statut</b> des patients.',
     hints:['SELECT DISTINCT col1, col2 retourne des paires uniques.','SELECT DISTINCT service, statut FROM patients;','Chaque paire (service, statut) n\'apparaît qu\'une seule fois.']},
+  ]},
+
+ {id:'d8',title:'8. OFFSET – Afficher à partir d\'une ligne',hot:false,
+  desc:'Sauter les N premières lignes pour paginer les résultats ou commencer à une position précise.',
+  concept:`<span class="cm">-- OFFSET saute les N premières lignes :</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tbl">patients</span> <span class="kw">LIMIT</span> <span class="num">5</span> <span class="kw">OFFSET</span> <span class="num">3</span>;
+<span class="cm">-- → lignes 4, 5, 6, 7, 8 (les 3 premières sont sautées)</span>
+
+<span class="cm">-- Pagination : 3 résultats par page</span>
+<span class="kw">LIMIT</span> <span class="num">3</span> <span class="kw">OFFSET</span> <span class="num">0</span>  <span class="cm">-- page 1 : lignes 1–3</span>
+<span class="kw">LIMIT</span> <span class="num">3</span> <span class="kw">OFFSET</span> <span class="num">3</span>  <span class="cm">-- page 2 : lignes 4–6</span>
+<span class="kw">LIMIT</span> <span class="num">3</span> <span class="kw">OFFSET</span> <span class="num">6</span>  <span class="cm">-- page 3 : lignes 7–9</span>`,
+  exercises:[
+   {task:'Affichez les patients en sautant le plus âgé : <b>4 patients triés par âge décroissant</b>, en commençant au 2ème. Colonnes : nom, prenom, age.',
+    hints:['ORDER BY age DESC pour trier du plus âgé au plus jeune.','LIMIT 4 OFFSET 1 — saute le 1er résultat (le plus âgé).','SELECT nom, prenom, age FROM patients ORDER BY age DESC LIMIT 4 OFFSET 1;']},
+   {task:'Simulez la <b>page 2</b> des consultations (3 résultats par page). Affichez id_consultation, diagnostic, duree_min, triés par id_consultation croissant.',
+    hints:['Page 2 = sauter les 3 premiers → OFFSET 3','LIMIT 3 OFFSET 3','SELECT id_consultation, diagnostic, duree_min FROM consultations ORDER BY id_consultation LIMIT 3 OFFSET 3;']},
+   {task:'Affichez le <b>3ème médicament le moins cher</b> uniquement. Colonnes : nom_medicament, prix_unitaire.',
+    hints:['ORDER BY prix_unitaire ASC pour du moins cher au plus cher.','LIMIT 1 OFFSET 2 — saute les 2 premiers, prend le 3ème.','SELECT nom_medicament, prix_unitaire FROM medicaments ORDER BY prix_unitaire ASC LIMIT 1 OFFSET 2;']},
+  ]},
+
+ {id:'d9',title:'9. Pourcentage – Afficher X% des données',hot:false,
+  desc:'Calculer et afficher une fraction des données en déduisant un LIMIT à partir d\'un pourcentage.',
+  concept:`<span class="cm">-- Calcul manuel : total × (X/100) = N → LIMIT N</span>
+<span class="cm">-- Ex : 10 patients × 30% = 3 → LIMIT 3</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tbl">patients</span> <span class="kw">ORDER BY</span> age <span class="kw">DESC</span> <span class="kw">LIMIT</span> <span class="num">3</span>;
+
+<span class="cm">-- Calcul dynamique (s'adapte si la table grandit) :</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tbl">patients</span> <span class="kw">ORDER BY</span> age <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> (<span class="kw">SELECT</span> <span class="fn">CAST</span>(<span class="fn">COUNT</span>(*) * <span class="num">0.30</span> <span class="kw">AS</span> <span class="kw">INT</span>) <span class="kw">FROM</span> <span class="tbl">patients</span>);
+<span class="cm">-- CAST(... AS INT) arrondit à l'entier inférieur</span>`,
+  exercises:[
+   {task:'Affichez les <b>20% des patients les plus âgés</b> (10 patients × 20% = 2 lignes). Colonnes : nom, prenom, age, triés par âge décroissant.',
+    hints:['10 patients × 0.20 = 2 → LIMIT 2','ORDER BY age DESC','SELECT nom, prenom, age FROM patients ORDER BY age DESC LIMIT 2;']},
+   {task:'Affichez les <b>50% des consultations les plus longues</b> (10 consultations × 50% = 5 lignes). Colonnes : diagnostic, duree_min, triés par durée décroissante.',
+    hints:['10 consultations × 0.50 = 5 → LIMIT 5','ORDER BY duree_min DESC','SELECT diagnostic, duree_min FROM consultations ORDER BY duree_min DESC LIMIT 5;']},
+   {task:'Affichez les <b>30% des patients les plus âgés de façon dynamique</b> — sans écrire 3 en dur. Utilisez une sous-requête dans LIMIT avec CAST et COUNT.',
+    hints:['LIMIT (SELECT CAST(COUNT(*) * 0.30 AS INT) FROM patients)','SELECT nom, prenom, age FROM patients ORDER BY age DESC ...','SELECT nom, prenom, age FROM patients ORDER BY age DESC LIMIT (SELECT CAST(COUNT(*) * 0.30 AS INT) FROM patients);']},
   ]},
 
  {id:'d7',title:'7. Fonctions – UPPER, LOWER, LENGTH, CONCAT, ROUND, YEAR',hot:false,
