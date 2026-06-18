@@ -82,15 +82,13 @@ function lesson(){return lessons()[idx];}
 // Marque la leçon active (▸), les leçons terminées (✓), les leçons futures verrouillées (🔒).
 // Appelée par renderLesson() à chaque changement de leçon ou de niveau.
 function renderSB(){
-  const firstUndone=lessons().findIndex(l=>!done.has(l.id));
   document.getElementById('sb').innerHTML=
     '<div class="sb-lbl">'+lmap[lvl]+'</div>'+
     lessons().map((l,i)=>{
       const isDone=done.has(l.id);const isActive=i===idx;
-      const locked=firstUndone!==-1&&i>firstUndone;
-      return `<div class="sb-item ${isActive?'active':''} ${isDone?'done':''} ${locked?'locked':''}" ${locked?'title="Terminez la leçon précédente pour débloquer"':'onclick="gol('+i+')"'}>
-        <span class="sbi">${isDone?'✓':isActive?'▸':locked?'🔒':'○'}</span>
-        <span style="flex:1;line-height:1.3">${l.title}${l.hot&&!locked?'<span class="tag tag-hot">★ Entretien</span>':''}</span>
+      return `<div class="sb-item ${isActive?'active':''} ${isDone?'done':''}" onclick="gol(${i})">
+        <span class="sbi">${isDone?'✓':isActive?'▸':'○'}</span>
+        <span style="flex:1;line-height:1.3">${l.title}${l.hot?'<span class="tag tag-hot">★ Entretien</span>':''}</span>
       </div>`;
     }).join('');
 }
@@ -165,11 +163,10 @@ function renderLesson(){
   if(edEl&&queryCache[cacheKey()]) edEl.value=queryCache[cacheKey()];
   document.getElementById('pf').style.width=Math.max(4,Math.round((done.size/total())*100))+'%';
   document.getElementById('pi').textContent=(idx+1)+' / '+lessons().length+'  |  '+done.size+'/'+total()+' ✓';
-  const allExDone=exercises().every((_,i)=>exDone.has(lesson().id+'_'+i));
   document.getElementById('bprev').disabled=idx===0;
   document.getElementById('bnext').textContent=idx===lessons().length-1?'Terminer ✓':'Suivant →';
-  document.getElementById('bnext').disabled=!allExDone;
-  document.getElementById('bnext').title=allExDone?'Passer à la leçon suivante':'Complétez les 3 exercices pour débloquer la leçon suivante';
+  document.getElementById('bnext').disabled=false;
+  document.getElementById('bnext').title='Passer à la leçon suivante';
   renderSB();
   document.getElementById('sp').classList.remove('open');
 }
@@ -199,7 +196,7 @@ function setLevel(l){saveCurrentQuery();lvl=l;idx=0;exIdx=0;document.querySelect
 
 // Saute directement à la leçon d'index i dans le niveau courant, repart au premier exercice.
 // Bloqué si la leçon est au-delà de la première leçon non complétée (progression linéaire).
-function gol(i){const fu=lessons().findIndex(l=>!done.has(l.id));if(fu!==-1&&i>fu)return;saveCurrentQuery();idx=i;exIdx=0;saveProgress();renderLesson();}
+function gol(i){saveCurrentQuery();idx=i;exIdx=0;saveProgress();renderLesson();}
 
 // Passe à la leçon suivante (d=+1) ou précédente (d=-1) dans le niveau courant.
 // Appelée par les boutons "← Précédent" et "Suivant →" en bas de page.
@@ -272,10 +269,6 @@ function execute(){
     // Marquer le bouton de l'exercice actif comme complété (✓) sans re-rendre toute la leçon
     const activeBtn=document.querySelector('.ex-btn.active');
     if(activeBtn){activeBtn.classList.add('done');activeBtn.textContent='✓';}
-    // Débloquer ou verrouiller le bouton Suivant selon l'avancement
-    const bnext=document.getElementById('bnext');
-    bnext.disabled=!allExDone;
-    bnext.title=allExDone?'Passer à la leçon suivante':'Complétez les 3 exercices pour débloquer la leçon suivante';
     let html;
     if(columns.length===1&&columns[0]==='message'){
       html=`<div class="rok">${rows[0][0]}</div>`;
