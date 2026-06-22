@@ -207,11 +207,11 @@ d:[
 <span class="kw">SELECT DISTINCT</span> service, sexe <span class="kw">FROM</span> <span class="tbl">patients</span>;`,
   exercises:[
    {task:'Listez tous les <b>services distincts</b> présents dans la table patients.',
-    hints:['Utilisez SELECT DISTINCT.','SELECT DISTINCT service FROM patients;','Une seule colonne suffit ici.']},
+    hints:['Utilisez SELECT DISTINCT.','Une seule colonne suffit ici.','SELECT DISTINCT service FROM patients;']},
    {task:'Listez toutes les <b>spécialités distinctes</b> des médecins.',
     hints:['SELECT DISTINCT colonne FROM table;','La colonne s\'appelle specialite dans la table medecins.','SELECT DISTINCT specialite FROM medecins;']},
    {task:'Listez toutes les combinaisons distinctes de <b>service</b> et <b>statut</b> des patients.',
-    hints:['SELECT DISTINCT col1, col2 retourne des paires uniques.','SELECT DISTINCT service, statut FROM patients;','Chaque paire (service, statut) n\'apparaît qu\'une seule fois.']},
+    hints:['SELECT DISTINCT col1, col2 retourne des paires uniques.','Chaque paire (service, statut) n\'apparaît qu\'une seule fois.','SELECT DISTINCT service, statut FROM patients;']},
   ]},
 
  {id:'d8',title:'8. OFFSET – Afficher à partir d\'une ligne',hot:false,
@@ -334,14 +334,14 @@ i:[
 <span class="kw">GROUP BY</span> service
 <span class="kw">ORDER BY</span> nb <span class="kw">DESC</span>;
 <span class="cm">-- GROUP_CONCAT : concatène les valeurs d'un groupe</span>
-<span class="fn">GROUP_CONCAT</span>(nom <span class="kw">SEPARATOR</span> <span class="str">', '</span>) <span class="kw">AS</span> liste_noms`,
+<span class="fn">GROUP_CONCAT</span>(nom, <span class="str">', '</span>) <span class="kw">AS</span> liste_noms`,
   exercises:[
    {task:'Nombre de patients et âge moyen <b>par service</b>, du service le plus chargé au moins.',
     hints:['GROUP BY service','COUNT(*) AS nb_patients, AVG(age) AS age_moyen','SELECT service, COUNT(*) AS nb_patients, AVG(age) AS age_moyen FROM patients GROUP BY service ORDER BY nb_patients DESC;']},
    {task:'Nombre de consultations et durée moyenne <b>par médecin</b> (medecin_id), triés par nombre décroissant.',
     hints:['GROUP BY medecin_id','COUNT(*) AS nb_consultations, AVG(duree_min) AS duree_moy','SELECT medecin_id, COUNT(*) AS nb_consultations, AVG(duree_min) AS duree_moy FROM consultations GROUP BY medecin_id ORDER BY nb_consultations DESC;']},
    {task:'Pour chaque service, affichez la <b>liste des noms de patients</b> séparés par une virgule avec <b>GROUP_CONCAT</b>.',
-    hints:['GROUP_CONCAT(nom SEPARATOR \', \') AS liste_patients','SELECT service, GROUP_CONCAT(nom SEPARATOR \', \') AS liste_patients FROM patients GROUP BY service;','GROUP_CONCAT concatène toutes les valeurs du groupe en une seule chaîne.']},
+    hints:['GROUP_CONCAT(nom, \', \') AS liste_patients','GROUP_CONCAT concatène toutes les valeurs du groupe en une seule chaîne.','SELECT service, GROUP_CONCAT(nom, \', \') AS liste_patients FROM patients GROUP BY service;']},
   ]},
 
  {id:'i5',title:'11. HAVING – Filtrer les groupes',hot:true,
@@ -426,7 +426,7 @@ a:[
 <span class="kw">JOIN</span> <span class="tbl">consultations</span> c <span class="kw">ON</span> p.id_patient = c.id_patient;`,
   exercises:[
    {task:'Avec un CTE <b>patients_seniors</b> (age >= 65), comptez combien de consultations ont ces patients.',
-    hints:['WITH patients_seniors AS (SELECT * FROM patients WHERE age >= 65)','Ensuite : SELECT COUNT(*) FROM patients_seniors p JOIN consultations c ON p.id_patient = c.id_patient','Le CTE filtre, le SELECT principal compte.']},
+    hints:['WITH patients_seniors AS (SELECT * FROM patients WHERE age >= 65)','Le CTE filtre, le SELECT principal compte.','WITH patients_seniors AS (SELECT * FROM patients WHERE age >= 65) SELECT COUNT(*) AS nb_consultations FROM patients_seniors p JOIN consultations c ON p.id_patient = c.id_patient;']},
    {task:'Avec un CTE <b>consult_longues</b> (duree_min > 40), affichez le diagnostic et le nom du médecin.',
     hints:['WITH consult_longues AS (SELECT * FROM consultations WHERE duree_min > 40)','JOIN medecins m ON consult_longues.medecin_id = m.id_medecin','WITH consult_longues AS (SELECT * FROM consultations WHERE duree_min > 40) SELECT c.diagnostic, m.nom AS medecin FROM consult_longues c JOIN medecins m ON c.medecin_id = m.id_medecin;']},
    {task:'Avec un CTE <b>medecins_top</b> (salaire > 8500), listez les patients de ces médecins (via patients.medecin_id).',
@@ -516,7 +516,7 @@ a:[
 <span class="fn">NULLIF</span>(col, <span class="num">0</span>)  <span class="cm">→ NULL si col = 0</span>`,
   exercises:[
    {task:'Listez les hospitalisations avec la date_sortie remplacée par <b>"Toujours hospitalisé"</b> si NULL.',
-    hints:['COALESCE(date_sortie, \'Toujours hospitalisé\') AS date_sortie','SELECT id_patient, chambre, date_entree, COALESCE(date_sortie, \'Toujours hospitalisé\') AS date_sortie','FROM hospitalisations']},
+    hints:['COALESCE(date_sortie, \'Toujours hospitalisé\') AS date_sortie','SELECT id_patient, chambre, date_entree, COALESCE(...) AS date_sortie FROM hospitalisations','SELECT id_patient, chambre, date_entree, COALESCE(date_sortie, \'Toujours hospitalisé\') AS date_sortie FROM hospitalisations;']},
    {task:'Affichez id_hosp, chambre, cout_journalier et une colonne <b>statut_sortie</b> = date_sortie ou "En cours" si NULL, ordonné par id_hosp.',
     hints:['COALESCE(date_sortie, \'En cours\') AS statut_sortie','SELECT id_hosp, chambre, cout_journalier, COALESCE(date_sortie, \'En cours\') AS statut_sortie','SELECT id_hosp, chambre, cout_journalier, COALESCE(date_sortie, \'En cours\') AS statut_sortie FROM hospitalisations ORDER BY id_hosp;']},
    {task:'Affichez les médicaments avec une colonne <b>prix_ajuste</b> qui vaut NULL si le prix est 0.15 (Lisinopril), sinon le prix normal.',
@@ -595,7 +595,7 @@ e:[
 )`,
   exercises:[
    {task:'Trouvez le <b>2ème salaire le plus élevé</b> parmi les médecins (sans utiliser OFFSET).',
-    hints:['Approche : SELECT MAX(salaire) WHERE salaire < (SELECT MAX(salaire) ...)','SELECT MAX(salaire) AS deuxieme_salaire FROM medecins WHERE salaire < (SELECT MAX(salaire) FROM medecins);','La sous-requête retourne le salaire max, la requête principale prend le max en dessous.']},
+    hints:['Approche : SELECT MAX(salaire) WHERE salaire < (SELECT MAX(salaire) ...)','La sous-requête retourne le salaire max, la requête principale prend le max en dessous.','SELECT MAX(salaire) AS deuxieme_salaire FROM medecins WHERE salaire < (SELECT MAX(salaire) FROM medecins);']},
    {task:'Trouvez la <b>2ème durée la plus longue</b> parmi les consultations (utilisez LIMIT + OFFSET).',
     hints:['SELECT DISTINCT duree_min FROM consultations ORDER BY duree_min DESC LIMIT 1 OFFSET 1','OFFSET 1 saute la première ligne (la plus longue).','SELECT DISTINCT duree_min AS deuxieme_duree FROM consultations ORDER BY duree_min DESC LIMIT 1 OFFSET 1;']},
    {task:'Trouvez l\'âge du <b>3ème patient le plus âgé</b> (utilisez LIMIT + OFFSET).',
@@ -616,11 +616,11 @@ e:[
 <span class="kw">CREATE INDEX</span> idx_svc_age <span class="kw">ON</span> <span class="tbl">patients</span>(service, age);`,
   exercises:[
    {task:'Créez un index <b>idx_service</b> sur la colonne service de la table patients.',
-    hints:['CREATE INDEX nom ON table(colonne);','CREATE INDEX idx_service ON patients(service);','Le nom de l\'index est idx_service.']},
+    hints:['CREATE INDEX nom ON table(colonne);','Le nom de l\'index est idx_service.','CREATE INDEX idx_service ON patients(service);']},
    {task:'Analysez le plan d\'exécution d\'un SELECT sur consultations filtré par <b>medecin_id = 2</b>.',
-    hints:['EXPLAIN SELECT ... FROM consultations WHERE medecin_id = 2','EXPLAIN SELECT * FROM consultations WHERE medecin_id = 2;','EXPLAIN retourne le plan de la requête sans l\'exécuter.']},
+    hints:['EXPLAIN SELECT ... FROM consultations WHERE medecin_id = 2','EXPLAIN retourne le plan de la requête sans l\'exécuter.','EXPLAIN SELECT * FROM consultations WHERE medecin_id = 2;']},
    {task:'Créez un index <b>idx_patient_consult</b> sur la colonne id_patient de la table consultations.',
-    hints:['CREATE INDEX nom ON table(colonne);','CREATE INDEX idx_patient_consult ON consultations(id_patient);','Cet index accélère les JOIN sur patients ↔ consultations.']},
+    hints:['CREATE INDEX nom ON table(colonne);','Cet index accélère les JOIN sur patients ↔ consultations.','CREATE INDEX idx_patient_consult ON consultations(id_patient);']},
   ]},
 
  {id:'e6',title:'26. UNION / UNION ALL – Combiner des résultats',hot:true,
@@ -638,7 +638,7 @@ e:[
 <span class="cm">-- Règle : même nombre de colonnes, mêmes types</span>`,
   exercises:[
    {task:'Combinez avec <b>UNION</b> la liste des noms de patients et la liste des noms de médecins en une seule colonne <b>nom</b>.',
-    hints:['SELECT nom FROM patients UNION SELECT nom FROM medecins;','UNION dédoublonne automatiquement les noms identiques.','Les deux SELECT doivent retourner le même nombre de colonnes.']},
+    hints:['UNION dédoublonne automatiquement les noms identiques.','Les deux SELECT doivent retourner le même nombre de colonnes.','SELECT nom FROM patients UNION SELECT nom FROM medecins;']},
    {task:'Combinez avec <b>UNION ALL</b> les noms de patients et de médecins (sans dédoublonner). Combien de lignes obtenez-vous ?',
     hints:['SELECT nom FROM patients UNION ALL SELECT nom FROM medecins;','UNION ALL conserve tous les doublons — le résultat a plus de lignes que UNION.','SELECT nom FROM patients UNION ALL SELECT nom FROM medecins;']},
    {task:'Créez une liste combinée avec une colonne <b>type</b> : "Patient" pour les patients, "Médecin" pour les médecins.',
@@ -659,7 +659,7 @@ e:[
 <span class="kw">WHERE</span> <span class="kw">NOT</span> <span class="fn">EXISTS</span> (...)`,
   exercises:[
    {task:'Listez les patients qui <b>ont au moins une consultation</b> (utilisez EXISTS).',
-    hints:['WHERE EXISTS (SELECT 1 FROM consultations c WHERE c.id_patient = p.id_patient)','SELECT p.nom, p.prenom FROM patients p WHERE EXISTS (SELECT 1 FROM consultations c WHERE c.id_patient = p.id_patient);','EXISTS est plus performant que IN sur les grandes tables.']},
+    hints:['WHERE EXISTS (SELECT 1 FROM consultations c WHERE c.id_patient = p.id_patient)','EXISTS est plus performant que IN sur les grandes tables.','SELECT p.nom, p.prenom FROM patients p WHERE EXISTS (SELECT 1 FROM consultations c WHERE c.id_patient = p.id_patient);']},
    {task:'Listez les patients qui <b>n\'ont aucune hospitalisation</b> (utilisez NOT EXISTS).',
     hints:['WHERE NOT EXISTS (SELECT 1 FROM hospitalisations h WHERE h.id_patient = p.id_patient)','SELECT p.nom, p.prenom FROM patients p','SELECT p.nom, p.prenom FROM patients p WHERE NOT EXISTS (SELECT 1 FROM hospitalisations h WHERE h.id_patient = p.id_patient);']},
    {task:'Listez les médecins qui <b>ont au moins une consultation</b> enregistrée (utilisez EXISTS).',
@@ -676,11 +676,11 @@ e:[
 <span class="cm">-- Ou avec opérateur : nom || ' ' || prenom</span>`,
   exercises:[
    {task:'Affichez le <b>nom en majuscules</b>, le <b>prénom en minuscules</b> et la <b>longueur du nom</b> pour chaque patient.',
-    hints:['UPPER(nom) AS nom_maj, LOWER(prenom) AS prenom_min, LENGTH(nom) AS longueur_nom','SELECT UPPER(nom) AS nom_maj, LOWER(prenom) AS prenom_min, LENGTH(nom) AS longueur_nom FROM patients;','Trois fonctions dans le même SELECT.']},
+    hints:['UPPER(nom) AS nom_maj, LOWER(prenom) AS prenom_min, LENGTH(nom) AS longueur_nom','Trois fonctions dans le même SELECT.','SELECT UPPER(nom) AS nom_maj, LOWER(prenom) AS prenom_min, LENGTH(nom) AS longueur_nom FROM patients;']},
    {task:'Affichez la <b>spécialité en majuscules</b> et la <b>longueur du nom</b> de chaque médecin.',
-    hints:['UPPER(specialite) AS specialite_maj, LENGTH(nom) AS longueur_nom','SELECT nom, UPPER(specialite) AS specialite_maj, LENGTH(nom) AS longueur_nom FROM medecins;','Deux fonctions appliquées sur la table medecins.']},
+    hints:['UPPER(specialite) AS specialite_maj, LENGTH(nom) AS longueur_nom','Deux fonctions appliquées sur la table medecins.','SELECT nom, UPPER(specialite) AS specialite_maj, LENGTH(nom) AS longueur_nom FROM medecins;']},
    {task:'Affichez les <b>3 premiers caractères du nom</b> de chaque patient avec SUBSTRING.',
-    hints:['SUBSTRING(nom, 1, 3) AS initiales — position 1, longueur 3','SELECT nom, SUBSTRING(nom, 1, 3) AS debut_nom FROM patients;','SUBSTRING(chaîne, position_départ, longueur)']},
+    hints:['SUBSTRING(nom, 1, 3) AS initiales — position 1, longueur 3','SUBSTRING(chaîne, position_départ, longueur)','SELECT nom, SUBSTRING(nom, 1, 3) AS debut_nom FROM patients;']},
   ]},
 
  {id:'e9',title:'29. CONCAT & Concaténation',hot:false,
@@ -696,11 +696,11 @@ prenom || <span class="str">' '</span> || nom <span class="kw">AS</span> nom_com
 <span class="kw">FROM</span> <span class="tbl">patients</span>;`,
   exercises:[
    {task:'Affichez le <b>nom complet</b> (prenom + espace + nom) de chaque patient dans une colonne appelée <b>nom_complet</b>.',
-    hints:['CONCAT(prenom, \' \', nom) AS nom_complet','SELECT CONCAT(prenom, \' \', nom) AS nom_complet FROM patients;','Vous pouvez aussi écrire : prenom || \' \' || nom AS nom_complet']},
+    hints:['CONCAT(prenom, \' \', nom) AS nom_complet','Vous pouvez aussi écrire : prenom || \' \' || nom AS nom_complet','SELECT CONCAT(prenom, \' \', nom) AS nom_complet FROM patients;']},
    {task:'Affichez une colonne <b>fiche</b> pour chaque médecin au format : <b>"nom - spécialité"</b>.',
-    hints:['CONCAT(nom, \' - \', specialite) AS fiche','SELECT CONCAT(nom, \' - \', specialite) AS fiche FROM medecins;','Exemple attendu : "Dr. Fontaine - Cardiologie"']},
+    hints:['CONCAT(nom, \' - \', specialite) AS fiche','Exemple attendu : "Dr. Fontaine - Cardiologie"','SELECT CONCAT(nom, \' - \', specialite) AS fiche FROM medecins;']},
    {task:'Affichez une colonne <b>patient_service</b> au format : <b>"nom (service)"</b> pour chaque patient.',
-    hints:['CONCAT(nom, \' (\', service, \')\') AS patient_service','SELECT CONCAT(nom, \' (\', service, \')\') AS patient_service FROM patients;','Exemple attendu : "Martin (Cardiologie)"']},
+    hints:['CONCAT(nom, \' (\', service, \')\') AS patient_service','Exemple attendu : "Martin (Cardiologie)"','SELECT CONCAT(nom, \' (\', service, \')\') AS patient_service FROM patients;']},
   ]},
 
  {id:'e10',title:'30. INSERT INTO – Insérer des données',hot:true,
@@ -712,7 +712,7 @@ prenom || <span class="str">' '</span> || nom <span class="kw">AS</span> nom_com
 <span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tbl">patients</span> <span class="kw">WHERE</span> nom = <span class="str">'Dupont'</span>;`,
   exercises:[
    {task:'Insérez un nouveau patient : nom <b>Dupont</b>, prenom <b>Alice</b>, age <b>45</b>, sexe <b>F</b>, service <b>Cardiologie</b>. Puis vérifiez avec un SELECT.',
-    hints:['INSERT INTO patients (nom, prenom, age, sexe, service) VALUES (\'Dupont\', \'Alice\', 45, \'F\', \'Cardiologie\');','Après l\'INSERT, faites : SELECT * FROM patients WHERE nom = \'Dupont\';','Les valeurs texte sont entre guillemets simples, les nombres non.']},
+    hints:['INSERT INTO patients (nom, prenom, age, sexe, service) VALUES (\'Dupont\', \'Alice\', 45, \'F\', \'Cardiologie\');','Les valeurs texte sont entre guillemets simples, les nombres non.','INSERT INTO patients (nom, prenom, age, sexe, service) VALUES (\'Dupont\', \'Alice\', 45, \'F\', \'Cardiologie\');']},
    {task:'Insérez un nouveau médicament : id_medicament <b>8</b>, nom <b>Paracétamol</b>, catégorie <b>Antalgique</b>, prix <b>0.05</b>. Vérifiez ensuite.',
     hints:['INSERT INTO medicaments (id_medicament, nom_medicament, categorie, prix_unitaire)','VALUES (8, \'Paracétamol\', \'Antalgique\', 0.05)','INSERT INTO medicaments (id_medicament, nom_medicament, categorie, prix_unitaire) VALUES (8, \'Paracétamol\', \'Antalgique\', 0.05); SELECT * FROM medicaments;']},
    {task:'Insérez une nouvelle prescription : id_prescription <b>8</b>, id_consultation <b>1</b>, id_medicament <b>7</b>, quantite <b>20</b>, duree_jours <b>30</b>. Vérifiez.',
@@ -769,7 +769,7 @@ prenom || <span class="str">' '</span> || nom <span class="kw">AS</span> nom_com
 <span class="kw">DROP VIEW</span> patients_cardio;`,
   exercises:[
    {task:'Créez une vue <b>vue_seniors</b> contenant les patients de 65 ans et plus (nom, prenom, age, service), puis faites un SELECT dessus.',
-    hints:['CREATE VIEW vue_seniors AS SELECT nom, prenom, age, service FROM patients WHERE age >= 65;','Ensuite : SELECT * FROM vue_seniors;','Une vue se comporte comme une table dans les requêtes suivantes.']},
+    hints:['CREATE VIEW vue_seniors AS SELECT nom, prenom, age, service FROM patients WHERE age >= 65;','Une vue se comporte comme une table dans les requêtes suivantes.','CREATE VIEW vue_seniors AS SELECT nom, prenom, age, service FROM patients WHERE age >= 65; SELECT * FROM vue_seniors;']},
    {task:'Créez une vue <b>vue_consultations_longues</b> (duree_min > 40), puis listez les diagnostics et durées de cette vue.',
     hints:['CREATE VIEW vue_consultations_longues AS SELECT * FROM consultations WHERE duree_min > 40;','Ensuite : SELECT diagnostic, duree_min FROM vue_consultations_longues;','CREATE VIEW vue_consultations_longues AS SELECT * FROM consultations WHERE duree_min > 40; SELECT diagnostic, duree_min FROM vue_consultations_longues;']},
    {task:'Créez une vue <b>vue_patients_medecins</b> joignant patients et médecins traitants (nom patient, service, nom médecin), puis sélectionnez-la.',
@@ -793,7 +793,7 @@ prenom || <span class="str">' '</span> || nom <span class="kw">AS</span> nom_com
 <span class="kw">DROP TABLE</span> notes_medicales;`,
   exercises:[
    {task:'Créez une table <b>notes_medicales</b> avec les colonnes : id_note INTEGER, id_patient INTEGER, note TEXT, date_note TEXT. Vérifiez.',
-    hints:['CREATE TABLE notes_medicales (id_note INTEGER, id_patient INTEGER, note TEXT, date_note TEXT);','Vérifiez avec SELECT * FROM notes_medicales;','La table sera vide, c\'est normal.']},
+    hints:['CREATE TABLE notes_medicales (id_note INTEGER, id_patient INTEGER, note TEXT, date_note TEXT);','La table sera vide, c\'est normal.','CREATE TABLE notes_medicales (id_note INTEGER, id_patient INTEGER, note TEXT, date_note TEXT);']},
    {task:'Ajoutez une colonne <b>telephone TEXT</b> à la table patients, puis affichez nom et telephone de 3 patients.',
     hints:['ALTER TABLE patients ADD telephone TEXT;','Ensuite : SELECT nom, telephone FROM patients LIMIT 3;','ALTER TABLE patients ADD telephone TEXT; SELECT nom, telephone FROM patients LIMIT 3;']},
    {task:'Créez une table <b>bilans_sanguins</b> avec : id_bilan INTEGER, id_patient INTEGER, date_bilan TEXT, resultat TEXT. Vérifiez.',
@@ -813,9 +813,9 @@ prenom || <span class="str">' '</span> || nom <span class="kw">AS</span> nom_com
    {task:'Divisez les médecins en <b>3 groupes de salaire</b> (NTILE) et affichez aussi leur DENSE_RANK par salaire décroissant.',
     hints:['NTILE(3) OVER (ORDER BY salaire) AS groupe_salaire','DENSE_RANK() OVER (ORDER BY salaire DESC) AS rang_salaire','SELECT nom, salaire, DENSE_RANK() OVER (ORDER BY salaire DESC) AS rang, NTILE(3) OVER (ORDER BY salaire) AS groupe FROM medecins;']},
    {task:'Divisez les patients en <b>4 quartiles</b> par âge croissant (NTILE(4)). Affichez nom, age et quartile.',
-    hints:['NTILE(4) OVER (ORDER BY age) AS quartile','SELECT nom, age, NTILE(4) OVER (ORDER BY age) AS quartile FROM patients;','NTILE(4) crée 4 groupes de taille égale (ou quasi-égale).']},
+    hints:['NTILE(4) OVER (ORDER BY age) AS quartile','NTILE(4) crée 4 groupes de taille égale (ou quasi-égale).','SELECT nom, age, NTILE(4) OVER (ORDER BY age) AS quartile FROM patients;']},
    {task:'Classez les patients par âge décroissant avec <b>DENSE_RANK</b>. Affichez nom, age et rang, ordonné par rang.',
-    hints:['DENSE_RANK() OVER (ORDER BY age DESC) AS rang','SELECT nom, age, DENSE_RANK() OVER (ORDER BY age DESC) AS rang FROM patients ORDER BY rang;','DENSE_RANK ne laisse pas de trous dans la numérotation, contrairement à RANK.']},
+    hints:['DENSE_RANK() OVER (ORDER BY age DESC) AS rang','DENSE_RANK ne laisse pas de trous dans la numérotation, contrairement à RANK.','SELECT nom, age, DENSE_RANK() OVER (ORDER BY age DESC) AS rang FROM patients ORDER BY rang;']},
   ]},
 
  {id:'e16',title:'36. FIRST_VALUE() & LAST_VALUE()',hot:false,
@@ -869,11 +869,11 @@ prenom || <span class="str">' '</span> || nom <span class="kw">AS</span> nom_com
 <span class="cm">-- 0.5 = médiane (50ème percentile)</span>`,
   exercises:[
    {task:'Calculez le <b>PERCENT_RANK</b> de chaque médecin par salaire croissant.',
-    hints:['PERCENT_RANK() OVER (ORDER BY salaire) AS percentile','SELECT nom, salaire, PERCENT_RANK() OVER (ORDER BY salaire) AS percentile FROM medecins;','La valeur va de 0 (moins payé) à 1 (plus payé).']},
+    hints:['PERCENT_RANK() OVER (ORDER BY salaire) AS percentile','La valeur va de 0 (moins payé) à 1 (plus payé).','SELECT nom, salaire, PERCENT_RANK() OVER (ORDER BY salaire) AS percentile FROM medecins;']},
    {task:'Calculez le <b>PERCENT_RANK</b> de chaque patient par âge croissant.',
-    hints:['PERCENT_RANK() OVER (ORDER BY age) AS percentile_age','SELECT nom, age, PERCENT_RANK() OVER (ORDER BY age) AS percentile_age FROM patients;','0 = le plus jeune, 1 = le plus âgé.']},
+    hints:['PERCENT_RANK() OVER (ORDER BY age) AS percentile_age','0 = le plus jeune, 1 = le plus âgé.','SELECT nom, age, PERCENT_RANK() OVER (ORDER BY age) AS percentile_age FROM patients;']},
    {task:'Calculez le <b>PERCENT_RANK</b> de chaque consultation par durée croissante.',
-    hints:['PERCENT_RANK() OVER (ORDER BY duree_min) AS percentile_duree','SELECT diagnostic, duree_min, PERCENT_RANK() OVER (ORDER BY duree_min) AS percentile_duree FROM consultations;','0 = consultation la plus courte, 1 = la plus longue.']},
+    hints:['PERCENT_RANK() OVER (ORDER BY duree_min) AS percentile_duree','0 = consultation la plus courte, 1 = la plus longue.','SELECT diagnostic, duree_min, PERCENT_RANK() OVER (ORDER BY duree_min) AS percentile_duree FROM consultations;']},
   ]},
 
  {id:'e19',title:'39. Requête récapitulative complexe',hot:true,
@@ -914,7 +914,7 @@ prenom || <span class="str">' '</span> || nom <span class="kw">AS</span> nom_com
    {task:'Affichez en une seule ligne le nombre total de patients <b>Hospitalisés</b> et le nombre <b>Ambulatoires</b>.',
     hints:['COUNT(CASE WHEN statut=\'Hospitalisé\' THEN 1 END) AS hospitalises','COUNT(CASE WHEN statut=\'Ambulatoire\' THEN 1 END) AS ambulatoires','SELECT COUNT(CASE WHEN statut=\'Hospitalisé\' THEN 1 END) AS hospitalises, COUNT(CASE WHEN statut=\'Ambulatoire\' THEN 1 END) AS ambulatoires FROM patients;']},
   ]},
- ,{id:'e21',title:'41. INTERSECT / EXCEPT – Intersection et exclusion',hot:true,
+ {id:'e21',title:'41. INTERSECT / EXCEPT – Intersection et exclusion',hot:true,
   desc:'Compléments de UNION : trouver des lignes communes ou absentes entre deux requêtes.',
   concept:`<span class="cm">-- INTERSECT : lignes présentes dans LES DEUX requêtes</span>
 <span class="kw">SELECT</span> id_patient <span class="kw">FROM</span> <span class="tbl">consultations</span>
@@ -953,7 +953,7 @@ prenom || <span class="str">' '</span> || nom <span class="kw">AS</span> nom_com
    {task:'Pour chaque hospitalisation terminée, calculez la <b>durée du séjour en jours</b> (DATEDIFF entre date_sortie et date_entree).',
     hints:['DATEDIFF(date_sortie, date_entree) AS duree_jours','SELECT id_hosp, chambre, DATEDIFF(date_sortie, date_entree) AS duree_jours FROM hospitalisations','SELECT id_hosp, chambre, date_entree, date_sortie, DATEDIFF(date_sortie, date_entree) AS duree_jours FROM hospitalisations WHERE date_sortie IS NOT NULL;']},
    {task:'Formatez la date_consultation de chaque consultation au format <b>\'%d/%m/%Y\'</b> dans une colonne <b>date_fr</b>.',
-    hints:['DATE_FORMAT(date_consultation, \'%d/%m/%Y\') AS date_fr','SELECT diagnostic, DATE_FORMAT(date_consultation, \'%d/%m/%Y\') AS date_fr FROM consultations;','%d = jour, %m = mois, %Y = année à 4 chiffres.']},
+    hints:['DATE_FORMAT(date_consultation, \'%d/%m/%Y\') AS date_fr','%d = jour, %m = mois, %Y = année à 4 chiffres.','SELECT diagnostic, DATE_FORMAT(date_consultation, \'%d/%m/%Y\') AS date_fr FROM consultations;']},
   ]},
 
  {id:'e23',title:'43. TRIM, REPLACE, LEFT, RIGHT – Nettoyage de chaînes',hot:true,
@@ -970,9 +970,9 @@ prenom || <span class="str">' '</span> || nom <span class="kw">AS</span> nom_com
 <span class="fn">RIGHT</span>(nom, <span class="num">2</span>)   <span class="cm">→ 'in' (2 derniers)</span>`,
   exercises:[
    {task:'Nettoyez les noms de patients : affichez le nom avec <b>TRIM</b> et la <b>première lettre</b> avec LEFT(nom, 1) dans une colonne <b>initiale</b>.',
-    hints:['TRIM(nom) AS nom_propre, LEFT(nom, 1) AS initiale','SELECT TRIM(nom) AS nom_propre, LEFT(nom, 1) AS initiale FROM patients;','LEFT(col, n) retourne les n premiers caractères de gauche.']},
+    hints:['TRIM(nom) AS nom_propre, LEFT(nom, 1) AS initiale','LEFT(col, n) retourne les n premiers caractères de gauche.','SELECT TRIM(nom) AS nom_propre, LEFT(nom, 1) AS initiale FROM patients;']},
    {task:'Dans les diagnostics, <b>remplacez</b> le mot "artérielle" par "art." avec REPLACE. Affichez diagnostic et diagnostic_court.',
-    hints:['REPLACE(diagnostic, \'artérielle\', \'art.\') AS diagnostic_court','SELECT diagnostic, REPLACE(diagnostic, \'artérielle\', \'art.\') AS diagnostic_court FROM consultations;','REPLACE(colonne, ancien, nouveau)']},
+    hints:['REPLACE(diagnostic, \'artérielle\', \'art.\') AS diagnostic_court','REPLACE(colonne, ancien, nouveau)','SELECT diagnostic, REPLACE(diagnostic, \'artérielle\', \'art.\') AS diagnostic_court FROM consultations;']},
    {task:'Affichez les <b>3 derniers caractères</b> du groupe sanguin avec RIGHT et les <b>2 premiers</b> avec LEFT pour chaque patient.',
     hints:['LEFT(groupe_sanguin, 2) AS type_sang, RIGHT(groupe_sanguin, 1) AS rhesus','Exemple : LEFT(\'AB+\', 2) = \'AB\', RIGHT(\'AB+\', 1) = \'+\'','SELECT nom, groupe_sanguin, LEFT(groupe_sanguin, 2) AS type_sang, RIGHT(groupe_sanguin, 1) AS rhesus FROM patients;']},
   ]},

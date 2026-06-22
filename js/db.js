@@ -2,9 +2,58 @@
 // MOTEUR SQL — SQLite via SQL.js (WebAssembly)
 // _SQL  : instance de la librairie SQL.js, chargée une seule fois de manière asynchrone
 // db    : base de données SQLite en mémoire, recréée à chaque resetDB()
+//
+// Le curriculum enseigne des fonctions MySQL (LEFT, RIGHT, YEAR, MONTH, DATE_FORMAT,
+// NOW, CURDATE, DATEDIFF) absentes de SQLite nativement — elles sont ajoutées ci-dessous
+// via create_function pour que les solutions des exercices s'exécutent réellement dans ce moteur.
 // ═══════════════════════════════════════
 let _SQL = null;
 let db = null;
+
+// Enregistre les équivalents MySQL manquants dans SQLite (dates stockées en 'YYYY-MM-DD').
+// Appelée à chaque (re)création de la base, car create_function est attaché à l'instance db.
+function _registerMySQLCompatFunctions() {
+  db.create_function('LEFT', (str, n) => str === null || n === null ? null : String(str).substring(0, Number(n)));
+  db.create_function('RIGHT', (str, n) => {
+    if (str === null || n === null) return null;
+    const s = String(str);
+    return s.substring(Math.max(0, s.length - Number(n)));
+  });
+  db.create_function('YEAR', (d) => {
+    const m = d === null ? null : /^(\d{4})-(\d{2})-(\d{2})/.exec(String(d));
+    return m ? parseInt(m[1], 10) : null;
+  });
+  db.create_function('MONTH', (d) => {
+    const m = d === null ? null : /^(\d{4})-(\d{2})-(\d{2})/.exec(String(d));
+    return m ? parseInt(m[2], 10) : null;
+  });
+  db.create_function('DATE_FORMAT', (d, format) => {
+    const m = d === null ? null : /^(\d{4})-(\d{2})-(\d{2})/.exec(String(d));
+    if (!m || format === null) return null;
+    const [, y, mo, day] = m;
+    return String(format).replace(/%Y/g, y).replace(/%m/g, mo).replace(/%d/g, day);
+  });
+  db.create_function('NOW', () => new Date().toISOString().slice(0, 19).replace('T', ' '));
+  db.create_function('CURDATE', () => new Date().toISOString().slice(0, 10));
+  db.create_function('DATEDIFF', (d1, d2) => {
+    if (d1 === null || d2 === null) return null;
+    return Math.round((new Date(String(d1)) - new Date(String(d2))) / 86400000);
+  });
+  // STDDEV (écart-type, variance d'échantillon n-1 — cohérent avec VARIANCE() natif de SQLite)
+  db.create_aggregate('STDDEV', {
+    init: () => ({ sum: 0, sumSq: 0, count: 0 }),
+    step: (state, value) => {
+      if (value === null) return state;
+      const v = Number(value);
+      return { sum: state.sum + v, sumSq: state.sumSq + v * v, count: state.count + 1 };
+    },
+    finalize: (state) => {
+      if (state.count < 2) return null;
+      const variance = (state.sumSq - (state.sum * state.sum) / state.count) / (state.count - 1);
+      return Math.sqrt(Math.max(0, variance));
+    }
+  });
+}
 
 // Charge SQL.js (WASM) depuis le CDN, puis construit la base en mémoire.
 // Appelée une seule fois au démarrage dans app.js — retourne une Promise.
@@ -22,6 +71,7 @@ async function initDB() {
 function _buildDB() {
   if (db) db.close();
   db = new _SQL.Database();
+  _registerMySQLCompatFunctions();
   db.run(ACTIVE_DOMAIN.sqlInit);
 }
 

@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════
 // TIPS — Explications en langage simple pour chaque leçon
 // Clé = ID de leçon (d1, i3, a2…). Le champ 'tip' est optionnel dans les leçons.
-// Affichés dans un bloc "En termes simples" ouvert par défaut au niveau Débutant.
+// Affichés dans un bloc "En termes simples" replié par défaut, à ouvrir au clic.
 // ═══════════════════════════════════════
 const TIPS = {
 
@@ -40,8 +40,8 @@ const TIPS = {
     analogy: '📊 Vous avez 10 patients et voulez voir 30% des cas → 10 × 0,30 = 3. En SQL : <code>LIMIT 3</code>. La version dynamique calcule ce chiffre automatiquement, même si la table passe à 1 000 patients.'
   },
   d7: {
-    simple: 'SQL intègre des fonctions qui transforment les données <b>à la volée</b>, sans modifier la base :<br>• <b>UPPER(nom)</b> → <code>\'MARTIN\'</code> &nbsp;/&nbsp; <b>LOWER(prenom)</b> → <code>\'sophie\'</code><br>• <b>LENGTH(nom)</b> → <code>6</code> (nombre de caractères)<br>• <b>CONCAT(prenom, \' \', nom)</b> → <code>\'Sophie Martin\'</code><br>• <b>ROUND(prix_unitaire, 1)</b> → <code>0.2</code> (arrondi à 1 décimale)<br>• <b>MONTH(date_admission)</b> → <code>11</code> &nbsp;/&nbsp; <b>YEAR(date_admission)</b> → <code>2024</code>',
-    analogy: '🧮 Chaque fonction correspond à une formule Excel :<br>• <code>UPPER(nom)</code> = <code>=MAJUSCULE(A1)</code><br>• <code>LENGTH(nom)</code> = <code>=NBCAR(A1)</code><br>• <code>CONCAT(prenom,\' \',nom)</code> = <code>=CONCATENER(A1," ",B1)</code><br>• <code>ROUND(prix,1)</code> = <code>=ARRONDI(A1,1)</code><br>• <code>MONTH(date)</code> = <code>=MOIS(A1)</code><br>En SQL, elles s\'appliquent sur <b>toutes les lignes d\'un coup</b>.'
+    simple: 'SQL a des fonctions qui transforment les données <b>à la volée</b>, sans modifier la base :<br>• <code>UPPER</code> / <code>LOWER</code> → majuscules / minuscules<br>• <code>LENGTH</code> → nombre de caractères<br>• <code>CONCAT</code> → assembler du texte<br>• <code>ROUND</code> → arrondir un nombre<br>• <code>YEAR</code> / <code>MONTH</code> → extraire une partie d\'une date',
+    analogy: '🧮 Comme des formules Excel : <code>UPPER</code>=MAJUSCULE, <code>LENGTH</code>=NBCAR, <code>CONCAT</code>=CONCATENER, <code>ROUND</code>=ARRONDI, <code>YEAR</code>=ANNEE. En SQL, elles s\'appliquent sur <b>toutes les lignes d\'un coup</b>.'
   },
 
   // ── Intermédiaire ─────────────────────────────────────────────────────────

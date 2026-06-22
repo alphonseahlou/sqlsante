@@ -195,8 +195,7 @@ function renderSchema(){
 function setLevel(l){saveCurrentQuery();lvl=l;idx=0;exIdx=0;document.querySelectorAll('.lvl-btn').forEach(b=>b.classList.toggle('active',b.dataset.l===l));saveProgress();renderLesson();}
 
 // Saute directement à la leçon d'index i dans le niveau courant, repart au premier exercice.
-// Bloqué si la leçon est au-delà de la première leçon non complétée (progression linéaire).
-function gol(i){saveCurrentQuery();idx=i;exIdx=0;saveProgress();renderLesson();}
+function gol(i){if(i<0||i>=lessons().length)return;saveCurrentQuery();idx=i;exIdx=0;saveProgress();renderLesson();}
 
 // Passe à la leçon suivante (d=+1) ou précédente (d=-1) dans le niveau courant.
 // Appelée par les boutons "← Précédent" et "Suivant →" en bas de page.
@@ -426,8 +425,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeLexique();clos
 
 // Domaines annoncés mais pas encore disponibles — affichés en "bientôt" dans le menu.
 const COMING_SOON=[
-  {id:'epide',     icon:'🦠', name:'Épidémiologie',        desc:'Incidence, cohortes, séries temporelles'},
-  {id:'bi-sante',  icon:'📊', name:'BI Santé',              desc:'KPIs, tableaux de bord, OLAP'},
   {id:'nutrition', icon:'🥗', name:'Nutrition clinique',    desc:'Profils nutritionnels, recommandations'},
   {id:'recherche', icon:'🔬', name:'Recherche clinique',    desc:'Essais randomisés, données manquantes'},
 ];
