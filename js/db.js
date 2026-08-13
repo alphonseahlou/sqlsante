@@ -1,12 +1,10 @@
-// ═══════════════════════════════════════
-// MOTEUR SQL — SQLite via SQL.js (WebAssembly)
+// Moteur SQL — SQLite via SQL.js (WebAssembly).
 // _SQL  : instance de la librairie SQL.js, chargée une seule fois de manière asynchrone
 // db    : base de données SQLite en mémoire, recréée à chaque resetDB()
 //
 // Le curriculum enseigne des fonctions MySQL (LEFT, RIGHT, YEAR, MONTH, DATE_FORMAT,
 // NOW, CURDATE, DATEDIFF) absentes de SQLite nativement — elles sont ajoutées ci-dessous
 // via create_function pour que les solutions des exercices s'exécutent réellement dans ce moteur.
-// ═══════════════════════════════════════
 let _SQL = null;
 let db = null;
 

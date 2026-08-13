@@ -1,13 +1,9 @@
-// ═══════════════════════════════════════
-// DOMAINE : BI Santé (pilotage d'un réseau d'établissements)
-//
+// Domaine : BI Santé (pilotage d'un réseau d'établissements).
 // Ce fichier est auto-suffisant : données SQL, leçons, schéma, compétences.
 // Curriculum centré sur les compétences data analyst/BI : jointures, agrégation,
 // fenêtrage, CTE, CASE — le DML/DDL pur (INSERT/UPDATE/DELETE/CREATE TABLE) est
 // volontairement absent, hors du périmètre d'un rôle d'analyse.
-//
 // Chargement : index.html → sante-bi.js → db.js → app.js
-// ═══════════════════════════════════════
 
 if (!window.DOMAINS) window.DOMAINS = {};
 

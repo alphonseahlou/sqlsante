@@ -1,11 +1,9 @@
-// ═══════════════════════════════════════
-// TIPS — Explications en langage simple pour chaque leçon
+﻿// Tips — explications en langage simple pour chaque leçon.
 // Clé = ID de leçon (d1, i3, a2…). Le champ 'tip' est optionnel dans les leçons.
 // Affichés dans un bloc "En termes simples" replié par défaut, à ouvrir au clic.
-// ═══════════════════════════════════════
 const TIPS = {
 
-  // ── Débutant ──────────────────────────────────────────────────────────────
+  // Débutant
   d1: {
     simple: '<b>SELECT</b> est la commande pour lire des données dans une base. C\'est toujours le point de départ d\'une question posée à la base : "Montre-moi ces informations."<br><br><b>FROM</b> précise dans quelle table chercher. Une base de données est un ensemble de tables — chaque table ressemble à un tableau Excel avec des lignes et des colonnes.',
     analogy: '📂 Imaginez un classeur avec plusieurs onglets : <i>patients</i>, <i>consultations</i>, <i>médecins</i>. <code>SELECT * FROM patients</code> revient à ouvrir l\'onglet patients et afficher toutes ses lignes.'
@@ -44,7 +42,7 @@ const TIPS = {
     analogy: '🧮 Comme des formules Excel : <code>UPPER</code>=MAJUSCULE, <code>LENGTH</code>=NBCAR, <code>CONCAT</code>=CONCATENER, <code>ROUND</code>=ARRONDI, <code>YEAR</code>=ANNEE. En SQL, elles s\'appliquent sur <b>toutes les lignes d\'un coup</b>.'
   },
 
-  // ── Intermédiaire ─────────────────────────────────────────────────────────
+  // Intermédiaire
   i1: {
     simple: '<b>JOIN</b> (ou INNER JOIN) relie deux tables via une colonne commune — la clé étrangère (FK). Le résultat ne contient que les lignes qui ont une correspondance dans les deux tables.',
     analogy: '🔗 Les patients ont un <code>medecin_id</code>. Les médecins ont un <code>id_medecin</code>. JOIN les relie comme assembler deux pièces de puzzle : on obtient le nom du patient avec le nom de son médecin sur la même ligne.'
@@ -74,7 +72,7 @@ const TIPS = {
     analogy: '🔍 Comme la barre de recherche d\'un traitement de texte : <code>WHERE diagnostic LIKE \'%Cancer%\'</code> retrouve tous les diagnostics contenant ce mot, qu\'il soit au début, au milieu ou à la fin.'
   },
 
-  // ── Avancé ────────────────────────────────────────────────────────────────
+  // Avancé
   a1: {
     simple: 'Une <b>sous-requête</b> est un SELECT imbriqué dans un autre. Elle peut apparaître :<br>• dans <b>WHERE</b> : pour filtrer selon un résultat calculé dynamiquement<br>• dans <b>FROM</b> : pour créer une table temporaire<br>• dans <b>SELECT</b> : pour ajouter une colonne calculée',
     analogy: '🪆 "Listez les patients plus âgés que la moyenne" — il faut d\'abord calculer la moyenne, puis comparer. La sous-requête calcule cette valeur à l\'intérieur de la requête principale : <code>WHERE age > (SELECT AVG(age) FROM patients)</code>'
@@ -104,7 +102,7 @@ const TIPS = {
     analogy: '🏥 <code>COALESCE(date_sortie, \'En cours\')</code> : si la date de sortie est NULL (patient encore hospitalisé), affiche "En cours". <code>NULLIF(prix, 0)</code> : retourne NULL si le prix vaut 0, évitant une division par zéro.'
   },
 
-  // ── Expert ────────────────────────────────────────────────────────────────
+  // Expert
   e1: {
     simple: 'Les <b>fonctions de fenêtrage</b> (OVER) calculent des valeurs sur un groupe de lignes sans les regrouper — chaque ligne garde son identité dans le résultat.<br><br><b>PARTITION BY</b> définit le groupe. <b>ORDER BY</b> dans OVER définit l\'ordre dans ce groupe.',
     analogy: '📊 Calculer le rang de chaque patient dans son service selon son âge, sans fusionner les lignes de patients. Chaque patient reste visible avec son rang calculé à côté.'
@@ -199,12 +197,9 @@ const TIPS = {
   },
 };
 
-// ═══════════════════════════════════════
-// LEXIQUE SQL — Dictionnaire des mots-clés
-// Utilisé par le panneau "📖 Lexique" accessible depuis la topbar.
-// ═══════════════════════════════════════
+// Lexique SQL — dictionnaire des mots-clés, utilisé par le panneau "📖 Lexique" accessible depuis la topbar.
 const LEXIQUE = [
-  // ── Lecture de données ────────────────
+  // Lecture de données
   { kw:'SELECT',      cat:'Lecture',     simple:'Choisit les colonnes à afficher.',                             ex:'SELECT nom, age FROM patients;' },
   { kw:'FROM',        cat:'Lecture',     simple:'Indique la table source des données.',                         ex:'SELECT * FROM medecins;' },
   { kw:'WHERE',       cat:'Filtrage',    simple:'Filtre les lignes selon une condition.',                        ex:'SELECT * FROM patients WHERE age > 60;' },
@@ -218,17 +213,17 @@ const LEXIQUE = [
   { kw:'IS NOT NULL', cat:'Filtrage',    simple:'Exclut les lignes sans valeur.',                                ex:'WHERE date_sortie IS NOT NULL' },
   { kw:'DISTINCT',    cat:'Lecture',     simple:'Supprime les lignes en double du résultat.',                    ex:'SELECT DISTINCT service FROM patients;' },
   { kw:'AS',          cat:'Lecture',     simple:'Renomme une colonne ou une table dans le résultat (alias).',    ex:'SELECT nom AS nom_patient FROM patients;' },
-  // ── Tri et pagination ─────────────────
+  // Tri et pagination
   { kw:'ORDER BY',    cat:'Tri',         simple:'Trie les résultats. ASC = croissant (défaut), DESC = décroissant.', ex:'ORDER BY age DESC' },
   { kw:'LIMIT',       cat:'Pagination',  simple:'Limite le nombre de lignes retournées.',                        ex:'SELECT * FROM patients LIMIT 5;' },
   { kw:'OFFSET',      cat:'Pagination',  simple:'Saute les N premières lignes (pour la pagination).',            ex:'LIMIT 10 OFFSET 20' },
-  // ── Jointures ─────────────────────────
+  // Jointures
   { kw:'JOIN',        cat:'Jointures',   simple:'Relie deux tables via une colonne commune. Ne garde que les lignes avec correspondance.', ex:'FROM patients JOIN medecins ON patients.medecin_id = medecins.id_medecin' },
   { kw:'LEFT JOIN',   cat:'Jointures',   simple:'Garde toutes les lignes de gauche, même sans correspondance à droite (colonnes droites = NULL).', ex:'FROM patients LEFT JOIN consultations ON ...' },
   { kw:'RIGHT JOIN',  cat:'Jointures',   simple:'Garde toutes les lignes de droite, même sans correspondance à gauche.', ex:'FROM patients RIGHT JOIN medecins ON ...' },
   { kw:'FULL JOIN',   cat:'Jointures',   simple:'Garde toutes les lignes des deux côtés, avec NULL là où il n\'y a pas de correspondance.', ex:'FROM patients FULL JOIN medecins ON ...' },
   { kw:'ON',          cat:'Jointures',   simple:'Précise la condition de jointure (quelle colonne relie les deux tables).', ex:'ON patients.medecin_id = medecins.id_medecin' },
-  // ── Agrégation ────────────────────────
+  // Agrégation
   { kw:'GROUP BY',    cat:'Agrégation',  simple:'Regroupe les lignes ayant la même valeur, pour calculer des totaux par groupe.', ex:'GROUP BY service' },
   { kw:'HAVING',      cat:'Agrégation',  simple:'Filtre les groupes après GROUP BY (comme WHERE, mais pour les agrégats).', ex:'HAVING COUNT(*) > 3' },
   { kw:'COUNT',       cat:'Agrégation',  simple:'Compte le nombre de lignes. COUNT(*) compte tout, COUNT(col) ignore les NULL.', ex:'SELECT COUNT(*) FROM patients;' },
@@ -236,10 +231,10 @@ const LEXIQUE = [
   { kw:'AVG',         cat:'Agrégation',  simple:'Calcule la moyenne d\'une colonne numérique.',                  ex:'SELECT AVG(age) FROM patients;' },
   { kw:'MAX',         cat:'Agrégation',  simple:'Retourne la valeur la plus haute.',                             ex:'SELECT MAX(salaire) FROM medecins;' },
   { kw:'MIN',         cat:'Agrégation',  simple:'Retourne la valeur la plus basse.',                             ex:'SELECT MIN(age) FROM patients;' },
-  // ── CTE et sous-requêtes ──────────────
+  // CTE et sous-requêtes
   { kw:'WITH ... AS', cat:'CTE',         simple:'Crée une table temporaire nommée réutilisable dans la requête. Rend le code plus lisible.', ex:'WITH adultes AS (SELECT * FROM patients WHERE age > 18)' },
   { kw:'Sous-requête',cat:'CTE',         simple:'Un SELECT imbriqué dans un autre SELECT, WHERE, ou FROM.',      ex:'WHERE id IN (SELECT id FROM ...)' },
-  // ── Fonctions de fenêtrage ────────────
+  // Fonctions de fenêtrage
   { kw:'OVER',        cat:'Fenêtrage',   simple:'Définit une fenêtre de calcul pour une fonction de fenêtrage. La ligne n\'est pas regroupée.', ex:'RANK() OVER (PARTITION BY service ORDER BY age)' },
   { kw:'PARTITION BY',cat:'Fenêtrage',   simple:'Divise les données en sous-groupes pour le calcul de fenêtrage (comme GROUP BY mais sans fusionner les lignes).', ex:'OVER (PARTITION BY service)' },
   { kw:'RANK',        cat:'Fenêtrage',   simple:'Attribue un rang avec sauts en cas d\'égalité (1,1,3).',        ex:'RANK() OVER (ORDER BY age DESC)' },
@@ -247,20 +242,20 @@ const LEXIQUE = [
   { kw:'ROW_NUMBER',  cat:'Fenêtrage',   simple:'Numérotation unique de chaque ligne, sans égalité.',            ex:'ROW_NUMBER() OVER (ORDER BY date_admission)' },
   { kw:'LAG',         cat:'Fenêtrage',   simple:'Accède à la valeur de la ligne précédente dans la fenêtre.',    ex:'LAG(date_consultation, 1) OVER (ORDER BY date_consultation)' },
   { kw:'LEAD',        cat:'Fenêtrage',   simple:'Accède à la valeur de la ligne suivante dans la fenêtre.',      ex:'LEAD(date_consultation, 1) OVER (ORDER BY date_consultation)' },
-  // ── DML ───────────────────────────────
+  // DML
   { kw:'INSERT INTO', cat:'DML',         simple:'Ajoute une nouvelle ligne dans une table.',                     ex:'INSERT INTO patients (nom, age) VALUES (\'Dupont\', 45);' },
   { kw:'UPDATE',      cat:'DML',         simple:'Modifie des lignes existantes. Toujours utiliser WHERE !',       ex:'UPDATE medecins SET salaire = 9000 WHERE id_medecin = 3;' },
   { kw:'DELETE FROM', cat:'DML',         simple:'Supprime des lignes. Toujours utiliser WHERE !',                 ex:'DELETE FROM patients WHERE statut = \'Sorti\';' },
-  // ── DDL ───────────────────────────────
+  // DDL
   { kw:'CREATE TABLE',cat:'DDL',         simple:'Crée une nouvelle table avec ses colonnes et leurs types.',     ex:'CREATE TABLE infirmiers (id INTEGER, nom TEXT);' },
   { kw:'ALTER TABLE', cat:'DDL',         simple:'Modifie une table existante (ajouter une colonne, etc.).',      ex:'ALTER TABLE patients ADD COLUMN telephone TEXT;' },
   { kw:'DROP TABLE',  cat:'DDL',         simple:'Supprime définitivement une table et toutes ses données.',       ex:'DROP TABLE table_temporaire;' },
-  // ── Ensembles ─────────────────────────
+  // Ensembles
   { kw:'UNION',       cat:'Ensembles',   simple:'Combine deux SELECT en empilant leurs lignes. Supprime les doublons.', ex:'SELECT nom FROM patients UNION SELECT nom FROM medecins;' },
   { kw:'UNION ALL',   cat:'Ensembles',   simple:'Comme UNION mais conserve les doublons. Plus rapide.',          ex:'SELECT ... UNION ALL SELECT ...' },
   { kw:'INTERSECT',   cat:'Ensembles',   simple:'Retourne les lignes présentes dans les deux SELECT.',           ex:'SELECT ... INTERSECT SELECT ...' },
   { kw:'EXCEPT',      cat:'Ensembles',   simple:'Retourne les lignes du premier SELECT absentes du second.',     ex:'SELECT ... EXCEPT SELECT ...' },
-  // ── Fonctions utiles ──────────────────
+  // Fonctions utiles
   { kw:'CASE WHEN',   cat:'Logique',     simple:'Condition si/alors/sinon dans une requête.',                    ex:'CASE WHEN age > 65 THEN \'Senior\' ELSE \'Standard\' END' },
   { kw:'COALESCE',    cat:'Logique',     simple:'Retourne la première valeur non-NULL parmi ses arguments.',     ex:'COALESCE(date_sortie, \'En cours\')' },
   { kw:'NULLIF',      cat:'Logique',     simple:'Retourne NULL si les deux valeurs sont égales, sinon la première.', ex:'NULLIF(duree_min, 0)' },
@@ -275,4 +270,25 @@ const LEXIQUE = [
   { kw:'LENGTH',      cat:'Texte',       simple:'Retourne le nombre de caractères d\'un texte.',                  ex:'SELECT LENGTH(diagnostic) FROM consultations;' },
   { kw:'CONCAT / ||', cat:'Texte',       simple:'Colle plusieurs textes ensemble.',                               ex:"SELECT nom || ' ' || prenom FROM patients;" },
   { kw:'GROUP_CONCAT',cat:'Agrégation',  simple:'Concatène les valeurs d\'un groupe en une seule chaîne.',       ex:"GROUP_CONCAT(diagnostic, ', ')" },
+  { kw:'VARIANCE',     cat:'Agrégation',  simple:'Mesure la dispersion des valeurs autour de la moyenne.',        ex:'SELECT VARIANCE(duree_min) FROM consultations;' },
+  { kw:'STDDEV',       cat:'Agrégation',  simple:'Écart-type — racine carrée de la variance, dans la même unité que les données.', ex:'SELECT STDDEV(duree_min) FROM consultations;' },
+  // Nombres
+  { kw:'ROUND',        cat:'Nombres',     simple:'Arrondit un nombre décimal à N chiffres après la virgule.',     ex:'SELECT ROUND(salaire / 12, 2) FROM medecins;' },
+  // Dates (suite)
+  { kw:'YEAR',         cat:'Dates',       simple:'Extrait l\'année d\'une date.',                                 ex:'SELECT YEAR(date_admission) FROM patients;' },
+  { kw:'MONTH',        cat:'Dates',       simple:'Extrait le mois d\'une date (1 à 12).',                         ex:'SELECT MONTH(date_admission) FROM patients;' },
+  // CTE et sous-requêtes (suite)
+  { kw:'EXISTS',       cat:'CTE',         simple:'Vrai si la sous-requête retourne au moins une ligne. NOT EXISTS teste l\'absence de résultat.', ex:'WHERE EXISTS (SELECT 1 FROM consultations WHERE consultations.id_patient = patients.id_patient)' },
+  // Texte (suite)
+  { kw:'SUBSTRING',    cat:'Texte',       simple:'Extrait une partie d\'un texte à partir d\'une position donnée.', ex:'SUBSTRING(diagnostic, 1, 10)' },
+  // DDL (suite)
+  { kw:'CREATE VIEW',  cat:'DDL',         simple:'Crée une vue : une requête sauvegardée, réutilisable comme une table virtuelle.', ex:'CREATE VIEW patients_actifs AS SELECT * FROM patients WHERE statut = \'Hospitalisé\';' },
+  // Performance
+  { kw:'INDEX',        cat:'Performance', simple:'Structure qui accélère la recherche sur une colonne, au prix d\'un espace disque et d\'un coût à l\'écriture.', ex:'CREATE INDEX idx_patients_nom ON patients(nom);' },
+  { kw:'EXPLAIN',      cat:'Performance', simple:'Affiche le plan d\'exécution d\'une requête — comment SQLite compte s\'y prendre pour la répondre.', ex:'EXPLAIN QUERY PLAN SELECT * FROM patients WHERE nom = \'Martin\';' },
+  // Fenêtrage (suite)
+  { kw:'NTILE',        cat:'Fenêtrage',   simple:'Répartit les lignes en N groupes de taille égale (ex. quartiles, déciles).', ex:'NTILE(4) OVER (ORDER BY salaire)' },
+  { kw:'FIRST_VALUE',  cat:'Fenêtrage',   simple:'Retourne la première valeur de la fenêtre.',                    ex:'FIRST_VALUE(salaire) OVER (PARTITION BY service ORDER BY salaire DESC)' },
+  { kw:'LAST_VALUE',   cat:'Fenêtrage',   simple:'Retourne la dernière valeur de la fenêtre.',                    ex:'LAST_VALUE(salaire) OVER (PARTITION BY service ORDER BY salaire DESC)' },
+  { kw:'PERCENT_RANK', cat:'Fenêtrage',   simple:'Rang relatif d\'une ligne dans la fenêtre, entre 0 et 1.',      ex:'PERCENT_RANK() OVER (ORDER BY age)' },
 ];

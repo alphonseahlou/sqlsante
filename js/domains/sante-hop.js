@@ -1,11 +1,7 @@
-﻿// ═══════════════════════════════════════
-// DOMAINE : Gestion Hospitalière
-//
+﻿// Domaine : Gestion Hospitalière.
 // Ce fichier est auto-suffisant : données SQL, leçons, schéma, compétences.
 // Pour ajouter un domaine, dupliquer ce fichier et le charger dans index.html.
-//
 // Chargement : index.html → sante-hop.js → db.js → app.js
-// ═══════════════════════════════════════
 
 // Initialisation du registre global si ce fichier est le premier domaine chargé.
 if (!window.DOMAINS) window.DOMAINS = {};
@@ -117,9 +113,7 @@ const SKILL_MAP = {
   'CASE & Ensembles': ['a3','e6','e20','e21'],
 };
 
-// ═══════════════════════════════════════
-// CURRICULUM — 40 leçons × 3 exercices
-// ═══════════════════════════════════════
+// Curriculum — 40 leçons × 3 exercices.
 const CUR={
 d:[
  {id:'d1',title:'1. SELECT – Lire des données',hot:true,

@@ -1,12 +1,8 @@
-// ═══════════════════════════════════════
-// DOMAINE : Épidémiologie (surveillance de maladies)
-//
+// Domaine : Épidémiologie (surveillance de maladies).
 // Ce fichier est auto-suffisant : données SQL, leçons, schéma, compétences.
 // Même périmètre que BI Santé : jointures, agrégation, fenêtrage, CTE, CASE —
 // pas de DML/DDL pur, hors du rôle d'un épidémiologiste/data analyst santé publique.
-//
 // Chargement : index.html → sante-epi.js → db.js → app.js
-// ═══════════════════════════════════════
 
 if (!window.DOMAINS) window.DOMAINS = {};
 

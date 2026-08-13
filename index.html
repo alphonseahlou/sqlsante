@@ -6,73 +6,55 @@
   <meta name="description" content="SQLSanté — Apprenez le SQL en contexte médical, du débutant à l'expert. Exercices interactifs, moteur SQL dans le navigateur, aucune installation requise.">
   <title>SQLSanté – Apprendre SQL</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Geist:wght@300..700&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <div id="app">
   <div class="topbar">
-    <div class="logo">SQL<em>Santé</em></div>
-    <button class="sidebar-toggle" onclick="toggleSidebar()" title="Afficher/masquer les leçons">☰</button>
-    <div class="domain-badge" id="domain-badge" onclick="toggleDomainMenu(event)">
-      <div class="domain-menu" id="domain-menu" onclick="event.stopPropagation()"></div>
+    <div class="topbar-left">
+      <div class="logo" onclick="goScreen('accueil')" style="cursor:pointer">SQL<em>Santé</em></div>
+      <button class="sidebar-toggle" onclick="toggleSidebar()" title="Afficher/masquer les leçons">☰</button>
+      <div class="domain-badge" id="domain-badge" onclick="toggleDomainMenu(event)">
+        <div class="domain-menu" id="domain-menu" onclick="event.stopPropagation()"></div>
+      </div>
     </div>
-    <div class="lvl-tabs">
-      <button class="lvl-btn active" data-l="d" onclick="setLevel('d')" title="Niveau Débutant — SELECT, WHERE, ORDER BY, LIMIT : les bases pour lire des données"><span class="full">Débutant</span><span class="short">Déb.</span></button>
-      <button class="lvl-btn" data-l="i" onclick="setLevel('i')" title="Niveau Intermédiaire — JOIN, GROUP BY, sous-requêtes : combiner et agréger les données"><span class="full">Intermédiaire</span><span class="short">Inter.</span></button>
-      <button class="lvl-btn" data-l="a" onclick="setLevel('a')" title="Niveau Avancé — CTE, fonctions de fenêtre, CASE, chaînes et dates"><span class="full">Avancé</span><span class="short">Avc.</span></button>
-      <button class="lvl-btn" data-l="e" onclick="setLevel('e')" title="Niveau Expert — DML, DDL, transactions, optimisation, opérations ensemblistes"><span class="full">Expert</span><span class="short">Exp.</span></button>
+    <div class="nav-pills">
+      <div class="nav-pill" id="np-accueil" onclick="goScreen('accueil')">Parcours</div>
+      <div class="nav-pill active" id="np-atelier" onclick="goScreen('atelier')">Atelier</div>
+      <div class="nav-pill" id="np-competences" onclick="goScreen('competences')" title="Voir votre progression par catégorie SQL sous forme de radar et de barres par niveau">Compétences</div>
+      <div class="nav-pill" id="np-lexique" onclick="goScreen('lexique')" title="Dictionnaire des commandes SQL — cherchez un mot-clé et obtenez son explication en français">Lexique</div>
     </div>
-    <button class="stats-btn" onclick="openStats()" title="Voir votre progression par catégorie SQL sous forme de radar et de barres par niveau">📊 <span class="btn-label">Compétences</span></button>
-    <button class="stats-btn" onclick="openLexique()" title="Dictionnaire des commandes SQL — cherchez un mot-clé et obtenez son explication en français">📖 <span class="btn-label">Lexique</span></button>
+    <div class="topbar-right">
+      <div class="streak-badge" id="streak-badge" title="Jours consécutifs d'activité">🔥 <span id="streak-n">0</span></div>
+      <div class="xp-badge" id="xp-badge" title="Points d'expérience — gagnés en validant des exercices"><span id="xp-n">0</span> XP</div>
+    </div>
   </div>
-  <div class="progbar"><div class="progfill" id="pf" style="width:4%"></div></div>
-  <div class="main">
+  <div class="progbar" id="progbar"><div class="progfill" id="pf" style="width:4%"></div></div>
+  <div class="accueil" id="accueil" style="display:none"></div>
+  <div class="competences" id="competences" style="display:none"></div>
+  <div class="lexique" id="lexique" style="display:none"></div>
+  <div class="test" id="test" style="display:none"></div>
+  <div class="main" id="main">
     <div class="sidebar" id="sb"></div>
     <div class="contentwrap">
       <div class="lhead">
+        <div class="lcrumb" id="lc"></div>
         <div class="ltitle" id="lt"></div>
         <div class="ldesc" id="ld"></div>
       </div>
       <div class="lbody" id="lb"></div>
       <div class="navfoot">
         <button class="nbtn" id="bprev" onclick="nav(-1)" title="Retourner à la leçon précédente">← Précédent</button>
-        <button class="nbtn pri" id="bnext" onclick="nav(1)" title="Complétez les 3 exercices pour passer à la leçon suivante">Suivant →</button>
         <span class="pinfo" id="pi"></span>
+        <button class="nbtn pri" id="bnext" onclick="nav(1)" title="Complétez les 3 exercices pour passer à la leçon suivante">Suivant →</button>
       </div>
     </div>
     <div class="spanel" id="sp">
       <div class="sph">📋 Structure BD <button class="spc" onclick="toggleSP()">✕ Fermer</button></div>
       <div class="sbody" id="sbd"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal Lexique -->
-<div class="lex-overlay" id="lex-modal" onclick="if(event.target===this)closeLexique()">
-  <div class="lex-panel">
-    <div class="lex-header">
-      <span class="lex-title">📖 Lexique SQL</span>
-      <button class="lex-close" onclick="closeLexique()">✕</button>
-    </div>
-    <div class="lex-search">
-      <input type="text" id="lex-q" placeholder="Chercher un mot-clé : SELECT, JOIN, GROUP BY…" oninput="filterLexique(this.value)">
-    </div>
-    <div class="lex-grid" id="lex-grid"></div>
-  </div>
-</div>
-
-<!-- Modal Stats -->
-<div class="stats-overlay" id="stats-modal" onclick="if(event.target===this)closeStats()">
-  <div class="stats-panel">
-    <div class="stats-header">
-      <span>📊 Progression par compétence SQL</span>
-      <button class="stats-close" onclick="closeStats()">✕</button>
-    </div>
-    <div class="stats-body">
-      <div class="stats-radar-wrap">
-        <div id="stats-radar"></div>
-      </div>
-      <div class="stats-levels" id="stats-levels"></div>
     </div>
   </div>
 </div>
@@ -85,7 +67,7 @@
 <script src="js/tips.js"></script>
 
 <!-- Moteur SQL (SQLite WebAssembly) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js" integrity="sha512-Rw3r47C4BVCj/4dy0MiF30B9c7+dLNeJdgPkyw8KiiYqUzAP3XFFw90EjO7mHLkJBl7JCm+/iTuL9dGh47lbMw==" crossorigin="anonymous"></script>
 <script src="js/db.js"></script>
 <script src="js/app.js"></script>
 </body>
